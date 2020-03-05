@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<testsuite failures="0" name="cucumber.runtime.formatter.JUnitFormatter" skipped="0" tests="1" time="5.22939">
+<testcase classname="API Validation Test" name="Session API" time="5.22939">
+<system-out><![CDATA[Given login via API.........................................................passed
+]]></system-out>
+</testcase>
+</testsuite>

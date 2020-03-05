@@ -12,8 +12,6 @@ public class LoginLogout {
 
     private WebDriver driver;
 
-    private String URL = Constants.HOME_URL;
-
     public LoginLogout(SharedDriver driver) {
         this.driver = driver;
     }
@@ -21,10 +19,7 @@ public class LoginLogout {
     public WebDriver getDriver() {
         return driver;
     }
-    @Given("^launch homepage$")
-    public void launch_homepage() throws Throwable {
-        launchLoginPage(URL + Constants.CONSOLE_LOGIN_PATH, Constants.EXPECTED_HOME_PAGE_TITILE);
-    }
+
 
     @Then("^login to webapp as user$")
     public void customerAdminLoginSteps() throws Throwable {

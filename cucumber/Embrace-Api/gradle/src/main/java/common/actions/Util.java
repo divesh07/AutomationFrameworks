@@ -53,7 +53,20 @@ public class Util {
         WebTarget target = JERSEYCLIENT.target(url);
         LOG.info("Sending GET REQUEST URL = {}", url);
         LOG.debug("Sending GET REQUEST JWT = {}", jwt);
-        Response getResponse = target.request(mediaTypeStrings).header(HttpHeaders.AUTHORIZATION, "Token " + jwt)
+        Response getResponse = target.request(mediaTypeStrings)
+                .header(HttpHeaders.AUTHORIZATION, "Token " + jwt)
+                .get(Response.class);
+        LOG.info("GET request response = {}", getResponse);
+        return getResponse;
+    }
+
+    public static Response sendGetRequestNoAuth(String url,
+            String... mediaTypeStrings) throws IOException, KeyManagementException,
+            NoSuchAlgorithmException {
+        WebTarget target = JERSEYCLIENT.target(url);
+        LOG.info("Sending GET REQUEST URL = {}", url);
+        Response getResponse = target.request(mediaTypeStrings)
+                .header("Accept", "application/json")
                 .get(Response.class);
         LOG.info("GET request response = {}", getResponse);
         return getResponse;
@@ -116,6 +129,24 @@ public class Util {
         LOG.info("Sending POST REQUEST URL = {}", url);
         Response postResponse = target.request(MediaType.TEXT_PLAIN, MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, "Token " + jwt)
+                .post(Entity.form(input));
+        LOG.info("GET request response = {}", postResponse);
+        return postResponse;
+    }
+
+    public static Response sendPostRequestWithUrlEncodedForm(String url,
+            MultivaluedMap<String, String> input, Map<String, String> queryParam)
+            throws IOException, KeyManagementException, NoSuchAlgorithmException {
+        url = url + "?";
+        WebTarget target = JERSEYCLIENT.target(url);
+//        for (Map.Entry<String, String> entry : queryParam.entrySet()) {
+//            target = target.queryParam(entry.getKey(), entry.getValue());
+//        }
+        LOG.info("Sending post request with Query Param {}", target.toString());
+        LOG.info("Sending POST REQUEST URL = {}", url);
+        Response postResponse = target.request(MediaType.TEXT_PLAIN, MediaType.APPLICATION_JSON)
+                .header("X-Requested-By", "ThoughtSpot")
+                .header(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded")
                 .post(Entity.form(input));
         LOG.info("GET request response = {}", postResponse);
         return postResponse;
