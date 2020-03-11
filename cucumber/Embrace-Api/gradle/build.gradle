@@ -33,6 +33,7 @@ dependencies {
     compile group: 'javax.activation', name: 'activation', version: '1.1'
     compile group: 'org.glassfish.jersey.media', name: 'jersey-media-json-jackson', version: '2.28'
     compile group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1'
+    //compile group: 'com.sun.jersey', name: 'jersey-client', version: '1.19'
     implementation files('/Users/divesh.gandhi/trunk/thoughtspot/callosum/server/target/callosum-server-1.0-SNAPSHOT-classes.jar')
     implementation files('/Users/divesh.gandhi/trunk/thoughtspot/callosum/common/target/callosum-common-1.0-SNAPSHOT.jar')
 }

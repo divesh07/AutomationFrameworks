@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 
 public class LoginLogout {
 
-    private static final Logger LOG = LoggerFactory.getLogger(LoginLogout.class);
+    /*private static final Logger LOG = LoggerFactory.getLogger(LoginLogout.class);
 
     private WebDriver driver;
 
@@ -20,20 +20,19 @@ public class LoginLogout {
         return driver;
     }
 
-
     @Then("^login to webapp as user$")
     public void customerAdminLoginSteps() throws Throwable {
         String username = Constants.CUSTOMER_USERNAME;
         customerLogin(Constants.CUSTOMER_USERNAME, Constants.CUSTOMER_PASSWORD);
     }
 
-    /**
+    *//**
      * Launches login page with given URL and verifies page title if specified
      *
      * @param loginUrl
      * @param expectedPageTitle
      * @throws Throwable
-     */
+     *//*
     public void launchLoginPage(String loginUrl, String expectedPageTitle) throws Throwable {
         UIActions.loginPage(driver, loginUrl);
         if (expectedPageTitle != null) {
@@ -51,7 +50,6 @@ public class LoginLogout {
 
         UIActions.clickElement(driver, WebElementMappingConstants.uiToTest.get("Login"));
         LOG.info("Selected login button");
-    }
-
+    }*/
 
 }
