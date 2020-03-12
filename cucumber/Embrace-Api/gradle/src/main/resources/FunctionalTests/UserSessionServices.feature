@@ -7,6 +7,8 @@ Feature: User Session Services API Validation Test
     Then validate session isActive
     Then create a user with weak password
     Then create a user with valid password
+    Then create duplicate user
+    Then create a group
     Then validate session logout
 
 #  Scenario: Connection API

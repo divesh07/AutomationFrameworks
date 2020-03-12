@@ -1,5 +1,9 @@
 package common.actions;
 
+import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 
@@ -123,8 +127,62 @@ public class APIActions {
         Assert.assertNotNull("Tenant ID cannot be null", tenantId);
     }
 
+    @Then("^create duplicate user$")
+    public void validateFailureCreationOfDuplicateUser() throws Exception {
+        MultivaluedMap<String, String> formData = new MultivaluedHashMap<String, String>();
+        formData.add("name", Constants.SECONDARY_CUSTOMER_USERNAME);
+        formData.add("password", Constants.SECONDARY_CUSTOMER_PASSWORD);
+        formData.add("displayname", Constants.SECONDARY_CUSTOMER_USERNAME);
+        formData.add("usertype", "LOCAL_USER");
+        formData.add("visibility", "DEFAULT");
+
+        Response response = Util
+                .sendPostRequestWithAuthCookie(Constants.SESSION_USER_CREATE, formData, null);
+
+        Util.verifyExpectedResponse(response, Response.Status.CONFLICT);
+        JSONParser responseParser = new JSONParser();
+        JSONObject responseObject = (JSONObject) responseParser.parse(Util.readResponse(response));
+        String failureReason = (String) responseObject.get("debug");
+        Assert.assertTrue("Duplicate username not found as a failure reason",failureReason.contains(
+                "Duplicate username"));
+    }
+
+    @Then("^create a group$")
+    public void createGroup() throws Exception {
+        MultivaluedMap<String, String> formData = new MultivaluedHashMap<String, String>();
+        formData.add("name", Constants.GROUP_NAME);
+        formData.add("displayname", Constants.GROUP_NAME);
+        formData.add("usertype", "LOCAL_GROUP");
+        formData.add("visibility", "DEFAULT");
+
+        Response response = Util
+                .sendPostRequestWithAuthCookie(Constants.SESSION_CREATE_GROUP, formData, null);
+
+        Util.verifyExpectedResponse(response, Response.Status.OK);
+        JSONParser responseParser = new JSONParser();
+        JSONObject responseObject = (JSONObject) responseParser.parse(Util.readResponse(response));
+        JSONObject header = (JSONObject) responseObject.get("header");
+        String username = (String) header.get("name");
+        Assert.assertTrue(username.equals(Constants.SECONDARY_CUSTOMER_USERNAME));
+
+        String type = (String) responseObject.get("type");
+        Assert.assertTrue(type.equals(Constants.CUSTOMER_TYPE));
+        String visibility = (String) responseObject.get("visibility");
+        Assert.assertTrue(visibility.equals(Constants.CUSTOMER_VISIBILITY));
+        String displayName = (String) responseObject.get("displayName");
+        Assert.assertTrue(displayName.equals(Constants.SECONDARY_CUSTOMER_USERNAME));
+        String tenantId = (String) responseObject.get("tenantId");
+        Assert.assertNotNull("Tenant ID cannot be null", tenantId);
+    }
+
     @Then("^validate session logout$")
-    public void validateSessionLogout() {
+    public void validateSessionLogout() throws Exception {
+        MultivaluedMap<String, String> formData = new MultivaluedHashMap<String, String>();
+
+        Response response = Util
+                .sendPostRequestWithAuthCookie(Constants.SESSION_LOGOUT, formData, null);
+
+        Util.verifyExpectedResponse(response, Response.Status.NO_CONTENT);
     }
 
     //

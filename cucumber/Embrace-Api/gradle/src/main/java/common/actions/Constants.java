@@ -19,6 +19,8 @@ public class Constants {
     public static final String SESSION_LOGOUT = SESSION + "logout";
     public static final String SESSION_ISACTIVE = SESSION + "isactive";
     public static final String SESSION_USER_CREATE = SESSION + "user/create";
+    public static final String SESSION_CREATE_GROUP = SESSION + "group/create";
+    public static final String GROUP_NAME = "testGroup";
     public static final String Test = "dummy";
     public static final String DRIVER_LOC="/usr/local/Cellar/geckodriver/0.26.0/bin/geckodriver";
     public static final Boolean ENBALE_UI = false;
