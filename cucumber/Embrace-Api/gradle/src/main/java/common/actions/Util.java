@@ -1,9 +1,9 @@
 package common.actions;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.util.Map;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
@@ -15,10 +15,12 @@ import javax.ws.rs.core.MultivaluedHashMap;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import java.io.IOException;
-import java.security.KeyManagementException;
-import java.security.NoSuchAlgorithmException;
-import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 public class Util {
@@ -60,12 +62,38 @@ public class Util {
         return getResponse;
     }
 
-    public static Response sendGetRequestAuth(String url, String... mediaTypeStrings) {
+    public static Response sendGetRequestAuth(String url, Map<String, String> queryParam) {
         Cookie sessionId =  getCookies();
         WebTarget target = JERSEYCLIENT.target(url);
+        if ( null !=queryParam) {
+            url = url + "?";
+            for (Map.Entry<String, String> entry : queryParam.entrySet()) {
+                target = target.queryParam(entry.getKey(), entry.getValue());
+            }
+        }
         LOG.info("Sending GET REQUEST URL = {}", url);
         Response getResponse = target.request(MediaType.TEXT_PLAIN, MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.CONTENT_TYPE, "application/json")
+                .cookie(sessionId)
+                .get(Response.class);
+        LOG.info("GET request response = {}", getResponse);
+        return getResponse;
+    }
+
+    public static Response sendGetRequestAuthWithContentType(String url,
+            Map<String, String> queryParam, String contentType) {
+        Cookie sessionId =  getCookies();
+        WebTarget target = JERSEYCLIENT.target(url);
+        if ( null !=queryParam) {
+            url = url + "?";
+            for (Map.Entry<String, String> entry : queryParam.entrySet()) {
+                target = target.queryParam(entry.getKey(), entry.getValue());
+            }
+        }
+        LOG.info("Sending GET REQUEST URL = {}", url);
+        Response getResponse = target.request(MediaType.TEXT_PLAIN, MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.ACCEPT, contentType)
+                .header("X-Requested-By", "ThoughtSpot")
                 .cookie(sessionId)
                 .get(Response.class);
         LOG.info("GET request response = {}", getResponse);
@@ -143,6 +171,8 @@ public class Util {
         Response postResponse = target.request(MediaType.TEXT_PLAIN, MediaType.APPLICATION_JSON)
                 .header("X-Requested-By", "ThoughtSpot")
                 .header(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded")
+                //.header(HttpHeaders.CONTENT_TYPE, "text/yaml")
+                //.header(HttpHeaders.ACCEPT, "text/yaml")
                 .post(Entity.form(formData));
         LOG.info("GET request response = {}", postResponse);
 
@@ -189,6 +219,25 @@ public class Util {
         Response deleteResponse = target.request(MediaType.TEXT_PLAIN, MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + jwt).delete();
         LOG.info("DELETE request response = {}", deleteResponse);
+        return deleteResponse;
+    }
+
+    public static Response sendDeleteRequestAuth(String url, Map<String, String> queryParam) {
+        WebTarget target = JERSEYCLIENT.target(url);
+        Cookie sessionId =  getCookies();
+        if ( null !=queryParam) {
+            url = url + "?";
+            for (Map.Entry<String, String> entry : queryParam.entrySet()) {
+                target = target.queryParam(entry.getKey(), entry.getValue());
+            }
+        }
+        LOG.info("Sending DELETE REQUEST URL = {}", url);
+        Response deleteResponse = target.request(MediaType.TEXT_PLAIN, MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.CONTENT_TYPE, "application/json")
+                .header("X-Requested-By", "ThoughtSpot")
+                .cookie(sessionId)
+                .delete();
+        LOG.info("GET request response = {}", deleteResponse);
         return deleteResponse;
     }
 

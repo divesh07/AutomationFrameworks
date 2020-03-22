@@ -1,6 +1,10 @@
 package common.actions;
 
-import org.apache.log4j.Logger;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -9,17 +13,16 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
-import java.security.SecureRandom;
-import java.security.cert.X509Certificate;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+
+import org.apache.log4j.Logger;
+
 
 /**
  * Jersey client that does not verify SSL certificates.
  * To be used for tooling and test code only.
  */
 public class InsecureClient extends RestClient {
+
     private static final Logger LOG = Logger.getLogger(InsecureClient.class);
 
     private static final TrustManager[] allTrustingCertManager = new TrustManager[]{new InsecureTrustManager()};
@@ -75,7 +78,7 @@ public class InsecureClient extends RestClient {
     }
 
     /**
-     * reate a create builder using a client that performs no SSL validation
+     * Create a create builder using a client that performs no SSL validation
      *
      * @param path
      * @param acceptedMediaTypes
