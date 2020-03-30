@@ -9,7 +9,7 @@ Feature: Live Query Services API Validation Test
     Then Connect and fetch metadata of Snowflake Connection
     Then Get the configuration properties for Snowflake Connection Type
     Then Export connection as YAML
-    Then Remove data from falcon for a given external table
     Then Get the scheduled timely job schedule
     Then Fetch the connection details
     Then Get the list of logical tables that exists in the connection
+    Then Remove data from falcon for a given external table

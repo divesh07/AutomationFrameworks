@@ -6,6 +6,19 @@ public class Constants {
     public static final String HOST_IP = "172.18.104.3";
     public static final String TS_CLUSTER = "http://" + HOST_IP + ":8088";
     public static final String CLUSTER_BASE_PATH = TS_CLUSTER + "/callosum/v1/";
+    public static final String SNOWFLAKE_HOST_HEADER = "thoughtspot_partner.snowflakecomputing.com";
+    public static final String SNOWFLAKE_ORIGIN_HEADER = "https://thoughtspot_partner"
+            + ".snowflakecomputing.com";
+    public static final String SNOWFLAKE_REFERER_HEADER = "https://thoughtspot_partner"
+            + ".snowflakecomputing.com/console/login";
+
+    public static final String TRIAL_HOST = "try.thoughtspot.com";
+    public static final String TS_TRIAL_CLUSTER_URL = "http://" + TRIAL_HOST ;
+    public static final String TS_TRIAL_BASE = TS_TRIAL_CLUSTER_URL + "/callosum/v1/";
+    public static final String TS_TRIAL_SESSION = TS_TRIAL_BASE + "session";
+    public static final String TS_TRIAL_SESSION_INFO = TS_TRIAL_SESSION + "/info";
+    public static final String TS_TRIAL_SYSTEM_CONFIG = TS_TRIAL_BASE + "system/config";
+
 
     public static final int MAX_FIND_ELEMENT_ATTEMPTS = 3;
     public static final int AUTO_REFRESH_UI_IMPLICIT_WAIT_SECONDS = 3;
@@ -17,6 +30,11 @@ public class Constants {
     public static final String SECONDARY_CUSTOMER_USERNAME = "testUser";
     public static final String SECONDARY_CUSTOMER_PASSWORD = "th0ught$p0t";
 
+    public static final String TRIAL_USERNAME = "sameer.satyam@thoughtspot.com";
+    public static final String TRIAL_PASSWORD = "th0ught$p0t";
+    public static final String TRIAL_USER_DISPLAYNAME = "SAMEER SATYAM";
+    public static final String TRIAL_USER_EMAIL = "sameer.satyam@thoughtspot.com";
+
     public static final String SNOWFLAKE_DATA_SOURCE = "RDBMS_SNOWFLAKE";
     public static final String SNOWFLAKE_ACCOUNT_NAME = "thoughtspot_partner";
     public static final String SNOWFLAKE_USER = "DIVESH_GANDHI";
@@ -25,6 +43,8 @@ public class Constants {
     public static final String SNOWFLAKE_WAREHOUSE = "MEDIUM_WH";
     public static final String SNOWFLAKE_DATABASE = "Champagne_UAT";
     public static final String SNOWFLAKE_SCHEMA = "CS_Status_falcon_default_schema";
+    public static final String SNOWFLAKE_DEMO_WAREHOUSE = "DEMO_WH";
+    public static final String SNOWFLAKE_ACCOUNT_ADMIN= "ACCOUNTADMIN";
 
     public static final String SNOWFLAKE_CONNECTION_NAME = "testConn";
     public static final String SNOWFLAKE_DESRIPTION = "Desc";
@@ -40,6 +60,12 @@ public class Constants {
     public static final String SESSION_MINDTOUCH_TOKEN = SESSION + "mindtouchtoken";
     public static final String SESSION_USER = SESSION + "user";
     public static final String SESSION_USER_DELETE = SESSION_USER + "/delete/";
+
+    public static final String TRIAL_SESSION = CLUSTER_BASE_PATH + "session/";
+    public static final String TRIAL_SESSION_LOGIN = TRIAL_SESSION + "login";
+    public static final String SHORT_LIVED_LOGIN = TRIAL_SESSION + "shortlivedlogin";
+    public static final String TRIAL_SESSION_INFO = TRIAL_SESSION + "info";
+    public static final String TRIAL_USER_ACTIVATE = TRIAL_SESSION + "user/activate";
 
     public static final String GROUP_NAME = "testGroup";
     public static final String GROUP_TYPE = "LOCAL_GROUP";
@@ -60,6 +86,17 @@ public class Constants {
     public static final String CONNECTION_REMOVEDATA = CONNECTION + "removedata";
     public static final String CONNECTION_GETSCHEDULEDJOB = CONNECTION + "getScheduledJob";
     public static final String CONNECTION_FETCHCONNECTION = CONNECTION + "fetchConnection";
+    public static final String CONNECTION_DETAIL = CONNECTION + "detail";
+
+    public static final String SNOWFLAKE_BASE = "https://thoughtspot_partner.snowflakecomputing.com/";
+    public static final String SNOWFLAKE_SESSION = SNOWFLAKE_BASE + "session/v1/";
+    public static final String SNOWFLAKE_LOGIN = SNOWFLAKE_SESSION + "login-request";
+    public static final String SNOWFLAKE_CONSOLE = SNOWFLAKE_BASE + "console/";
+    public static final String SNOWFLAKE_QUERY = SNOWFLAKE_BASE + "queries/v1/query-request";
+    public static final String SNOWFLAKE_LOGOUT = SNOWFLAKE_BASE + "session/logout-request";
+
+    public static final String SNOWFLAKE_ACTION = SNOWFLAKE_CONSOLE + "action-request";
+
 
     public static final String DRIVER_LOC="/usr/local/Cellar/geckodriver/0.26.0/bin/geckodriver";
     public static final Boolean ENBALE_UI = false;

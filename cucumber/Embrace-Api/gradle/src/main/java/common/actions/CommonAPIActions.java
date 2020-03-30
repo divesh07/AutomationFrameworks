@@ -19,8 +19,8 @@ import org.slf4j.LoggerFactory;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 
-public class APIActions {
-    private static final Logger LOG = LoggerFactory.getLogger(APIActions.class);
+public class CommonAPIActions {
+    private static final Logger LOG = LoggerFactory.getLogger(CommonAPIActions.class);
 
     private String userId = "";
 
@@ -33,6 +33,8 @@ public class APIActions {
     private String databaseName = "";
 
     private String connectionId = "";
+
+    private String jwtAuthToken = "";
 
     // TODO : Add logic to enable this only when UI validation flag is turned ON
     //private final WebDriver driver;
@@ -511,18 +513,22 @@ public class APIActions {
                 .sendGetRequestAuth(Constants.CONNECTION_GETSCHEDULEDJOB, params);
 
         System.out.println(response);
-        Util.verifyExpectedResponse(response, Response.Status.NO_CONTENT);
+        Util.verifyExpectedResponse(response, Response.Status.OK);
     }
 
     @Then("^Fetch the connection details$")
     public void fetchTheConnectionDetails() throws Exception {
+        Assert.assertNotNull("connectionId cannot be null", connectionId);
+
         MultivaluedMap<String, String> formData = new MultivaluedHashMap<String, String>();
         formData.add("id", connectionId);
         formData.add("config", "{\"accountName\":\"" + Constants.SNOWFLAKE_ACCOUNT_NAME +"\","
                 + "\"user\":\"" + Constants.SNOWFLAKE_USER + "\",\"password\":\"" + Constants.SNOWFLAKE_PASSWORD + "\","
                 + "\"role\":\"" + Constants.SNOWFLAKE_ROLE + "\","
                 + "\"warehouse\":\"" + Constants.SNOWFLAKE_WAREHOUSE + "\",\"database\":\"" + Constants.SNOWFLAKE_DATABASE + "\","
-                + "\"schema\":\"" + Constants.SNOWFLAKE_SCHEMA + "\",");
+                + "\"schema\":\"" + Constants.SNOWFLAKE_SCHEMA + "\"}");
+
+        System.out.println(formData);
 
         Response response = Util
                 .sendPostRequestWithAuthCookie(Constants.CONNECTION_FETCHCONNECTION, formData, null);
@@ -559,21 +565,57 @@ public class APIActions {
     }
 
     @Then("^Get the list of logical tables that exists in the connection$")
-    public void getTheListOfLogicalTablesThatExistsInTheConnection() {
+    public void getTheListOfLogicalTablesThatExistsInTheConnection() throws Exception {
         Assert.assertNotNull("connection id cannot be null", connectionId);
         Map<String, String> params = new HashMap<>();
-        params.put("id", connectionId);
-        params.put("id", connectionId);
-
+        params.put("sort", "DEFAULT");
+        params.put("sortascending", "false");
+        String url = Constants.CONNECTION_DETAIL + "/" + connectionId;
         Response response = Util
-                .sendGetRequestAuth(Constants.CONNECTION_CONFIG, params);
+                .sendGetRequestAuth(url, params);
         System.out.println(response);
         Util.verifyExpectedResponse(response, Response.Status.OK);
 
         JSONParser responseParser = new JSONParser();
-        JSONArray responseList = (JSONArray) responseParser.parse(Util.readResponse(response));
-        System.out.println(responseList);
+        JSONObject responseObject = (JSONObject) responseParser.parse(Util.readResponse(response));
+        System.out.println(responseObject);
+
+        JSONObject header = (JSONObject) responseObject.get("header");
+        String id = (String) header.get("id");
+        Assert.assertNotNull("id cannot be null", id);
+        Long indexVersion = (Long) header.get("indexVersion");
+        Assert.assertNotNull("indexVersion cannot be null", indexVersion);
+        Long generationNum = (Long) header.get("generationNum");
+        Assert.assertNotNull("generationNum cannot be null", generationNum);
+
+        String name = (String) header.get("name");
+        Assert.assertNotNull("name cannot be null", name);
+        String description = (String) header.get("description");
+        Assert.assertNotNull("description cannot be null", description);
+        String author = (String) header.get("author");
+        Assert.assertNotNull("author cannot be null", author);
+        String authorName = (String) header.get("authorName");
+        Assert.assertNotNull("authorName cannot be null", authorName);
+        String authorDisplayName = (String) header.get("authorDisplayName");
+        Assert.assertNotNull("authorDisplayName cannot be null", authorDisplayName);
+        Long created = (Long) header.get("created");
+        Assert.assertNotNull("created cannot be null", created);
+        Long modified = (Long) header.get("modified");
+        Assert.assertNotNull("modified cannot be null", modified);
+        String modifiedBy = (String) header.get("modifiedBy");
+        Assert.assertNotNull("modifiedBy cannot be null", modifiedBy);
+        String owner = (String) header.get("owner");
+        Assert.assertNotNull("owner cannot be null", owner);
+        Boolean isDeleted = (Boolean) header.get("isDeleted");
+        Assert.assertNotNull("isDeleted cannot be null", isDeleted.toString());
+        Boolean isHidden = (Boolean) header.get("isHidden");
+        Assert.assertNotNull("isHidden cannot be null", isHidden.toString());
 
     }
+
+
+
+
+
 
 }

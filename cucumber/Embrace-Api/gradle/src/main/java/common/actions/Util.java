@@ -16,6 +16,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.glassfish.jersey.message.GZipEncoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -138,6 +139,65 @@ public class Util {
         return postResponse;
     }
 
+    public static Response sendSFPostRequest(String url,
+            String input, Map<String, String> queryParam, String jwt)
+            throws IOException, KeyManagementException, NoSuchAlgorithmException {
+        url = url + "?";
+        System.setProperty("sun.net.http.allowRestrictedHeaders", "true");
+        WebTarget target = JERSEYCLIENT.target(url);
+        target.register(GZipEncoder.class);
+        if ( null != queryParam) {
+            for (Map.Entry<String, String> entry : queryParam.entrySet()) {
+                target = target.queryParam(entry.getKey(), entry.getValue());
+            }
+        }
+        LOG.info("Sending post request with Query Param {}", target.toString());
+        LOG.info("Sending POST REQUEST URL = {}", url);
+        Response postResponse = target.request()
+                .header(HttpHeaders.ACCEPT_ENCODING, "gzip, deflate, br")
+                .header(HttpHeaders.CONTENT_TYPE, "applcation/json")
+                .header(HttpHeaders.ACCEPT, "application/snowflake")
+                .header(HttpHeaders.AUTHORIZATION, jwt)
+                .header(HttpHeaders.HOST, Constants.SNOWFLAKE_HOST_HEADER)
+                .header("Origin", Constants.SNOWFLAKE_ORIGIN_HEADER)
+                .header("Referer", Constants.SNOWFLAKE_REFERER_HEADER)
+                .post(Entity.json(input));
+        LOG.info("GET request response = {}", postResponse);
+        System.out.println(postResponse.getHeaders());
+        return postResponse;
+    }
+
+    public static Response sendSFPostRequestNoExpansion(String url,
+            String input, Map<String, String> queryParam, String jwt)
+            throws IOException, KeyManagementException, NoSuchAlgorithmException {
+        url = url + "?";
+        System.setProperty("sun.net.http.allowRestrictedHeaders", "true");
+        WebTarget target = JERSEYCLIENT.target(url);
+
+        //target.register(GZipEncoder.class);
+
+        if ( null != queryParam) {
+            for (Map.Entry<String, String> entry : queryParam.entrySet()) {
+                target = target.queryParam(entry.getKey(), entry.getValue());
+            }
+        }
+        LOG.info("Sending post request with Query Param {}", target.toString());
+        LOG.info("Sending POST REQUEST URL = {}", url);
+        Response postResponse = target.request()
+                .header("X-Requested-With", "XMLHttpRequest")
+                .header("Accept-Encoding", "gzip, deflate, br")
+                .header("Content-Type", "application/json")
+                //.header("Accept", "*/*")
+                .header(HttpHeaders.AUTHORIZATION, jwt)
+                .header("Host", "thoughtspot_partner.snowflakecomputing.com")
+                .header("Origin", "https://thoughtspot_partner.snowflakecomputing.com")
+                .header("Referer", "https://thoughtspot_partner.snowflakecomputing.com/console/login")
+                .post(Entity.json(input));
+        LOG.info("GET request response = {}", postResponse);
+        System.out.println(postResponse.getHeaders());
+        return postResponse;
+    }
+
     public static Response sendPostRequestWithAuthCookie(String url,
             MultivaluedMap<String, String> input, Map<String, String> queryParam)
             throws IOException, KeyManagementException, NoSuchAlgorithmException {
@@ -171,8 +231,6 @@ public class Util {
         Response postResponse = target.request(MediaType.TEXT_PLAIN, MediaType.APPLICATION_JSON)
                 .header("X-Requested-By", "ThoughtSpot")
                 .header(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded")
-                //.header(HttpHeaders.CONTENT_TYPE, "text/yaml")
-                //.header(HttpHeaders.ACCEPT, "text/yaml")
                 .post(Entity.form(formData));
         LOG.info("GET request response = {}", postResponse);
 
