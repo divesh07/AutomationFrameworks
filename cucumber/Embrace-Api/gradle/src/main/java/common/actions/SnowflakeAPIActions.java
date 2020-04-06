@@ -3,6 +3,8 @@ package common.actions;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.ws.rs.core.Response;
 
@@ -18,6 +20,12 @@ import cucumber.api.java.en.Then;
 public class SnowflakeAPIActions {
 
     private String jwtAuthToken;
+
+    private String redirect_uri;
+
+    private static String userId;
+
+    private static String userAuthToken;
 
     public void refreshAuthToken() throws Exception {
         String input = "{\"data\":{\"ACCOUNT_NAME\":\"THOUGHTSPOT_PARTNER\","
@@ -151,7 +159,7 @@ public class SnowflakeAPIActions {
     @Then("^Remove ETL integration$")
     public void removeETLIntegration() throws Exception {
         refreshAuthToken();
-        String input = "{\"sqlText\":\"select system$remove_etl_integration('thoughtspot');\",\"disableOfflineChunks\":false,\"parameters\":{\"ui_mode\":true,\"ui_internal_mode\":false},\"isInternal\":false}";
+        String input = "{\"sqlText\":\"select system$remove_etl_integration('thoughtspot');\",\"disableOfflineChunks\":false}";
         Map<String, String> params = new HashMap<>();
         params.put("requestId", "9500bdb0-6ed3-11ea-b312-49172493a6a6");
 
@@ -163,7 +171,6 @@ public class SnowflakeAPIActions {
                 .sendSFPostRequest(Constants.SNOWFLAKE_ACTION, input, params, jwt);
         System.out.println(response);
         Util.verifyExpectedResponse(response, Response.Status.OK);
-        AssertQueryRequestResponse(response);
     }
 
     @Then("^list all databases$")
@@ -299,7 +306,7 @@ public class SnowflakeAPIActions {
         AssertQueryRequestResponse(response);
     }
 
-    public void AssertQueryRequestResponse(Response response) throws IOException, ParseException {
+    public String AssertQueryRequestResponse(Response response) throws IOException, ParseException {
         JSONParser responseParser = new JSONParser();
         JSONObject responseObject = (JSONObject) responseParser.parse(Util.readResponse(response));
         System.out.println(responseObject);
@@ -310,12 +317,18 @@ public class SnowflakeAPIActions {
         Assert.assertTrue(parameters.size() > 0);
         JSONArray rowtype = (JSONArray) dataObject.get("rowtype");
         Assert.assertTrue(rowtype.size() > 0);
+
         JSONArray rowset = (JSONArray) dataObject.get("rowset");
         Assert.assertTrue(rowset.size() > 0);
+        JSONArray rowtypeNestedObj = (JSONArray) rowset.get(0);
+        String rowtypeObj = (String) rowtypeNestedObj.get(0);
+        System.out.println(rowtypeObj);
+        Assert.assertNotNull(rowtypeObj);
         String finalWarehouseName = (String) dataObject.get("finalWarehouseName");
         Assert.assertTrue(finalWarehouseName.equalsIgnoreCase(Constants.SNOWFLAKE_DEMO_WAREHOUSE));
         String finalRoleName = (String) dataObject.get("finalRoleName");
         Assert.assertTrue(finalRoleName.equalsIgnoreCase(Constants.SNOWFLAKE_ACCOUNT_ADMIN));
+        return rowtypeObj;
     }
 
     @Then("^List schemas is ts_partner\\.freetrial database$")
@@ -359,7 +372,7 @@ public class SnowflakeAPIActions {
     @Then("^Create ETL integration$")
     public void createETLIntegration() throws Exception {
         refreshAuthToken();
-        String input = "{\"sqlText\":\"CALL SYSTEM$CREATE_ETL_INTEGRATION((?));\",\"disableOfflineChunks\":true,\"bindings\":{\"1\":{\"value\":\"thoughtspot\",\"type\":\"TEXT\"}},\"parameters\":{\"ui_mode\":false,\"ui_internal_mode\":false},\"isInternal\":true}";
+        String input = "{\"sqlText\":\"CALL SYSTEM$CREATE_ETL_INTEGRATION((?));\",\"disableOfflineChunks\":true,\"bindings\":{\"1\":{\"value\":\"thoughtspot\",\"type\":\"TEXT\"}}}";
 
         Map<String, String> params = new HashMap<>();
         params.put("requestId", "ec8bf540-71c6-11ea-905b-79ea33d71b7e");
@@ -372,6 +385,143 @@ public class SnowflakeAPIActions {
                 .sendSFPostRequest(Constants.SNOWFLAKE_QUERY, input, params, jwt);
         System.out.println(response);
         Util.verifyExpectedResponse(response, Response.Status.OK);
+        String returnedString = AssertQueryRequestResponse(response);
+        System.out.println(returnedString);
+        JSONParser parser = new JSONParser();
+        JSONObject returnedObject = (JSONObject) parser. parse(returnedString);
+
+        String message = (String) returnedObject.get("message");
+        System.out.println(message);
+        if ( message.equalsIgnoreCase("Partner is already integrated")){
+            System.out.println("ETL Integration not required");
+        }else if ( message.equalsIgnoreCase("Account and Destination Created") ) {
+            JSONObject data = (JSONObject) returnedObject.get("data");
+            Assert.assertNotNull(data);
+            System.out.println(data);
+            redirect_uri = (String) data.get("redirect_uri");
+            System.out.println(redirect_uri);
+            Assert.assertNotNull(redirect_uri);
+            Pattern p = Pattern.compile("(id=)(.+)(&token=)(.+)");
+            Matcher m = p.matcher(redirect_uri);
+            while(m.find()) {
+                userId = m.group(2);
+                userAuthToken = m.group(4);
+            }
+            System.out.println(userId);
+            Assert.assertNotNull(userId);
+            System.out.println(userAuthToken);
+            Assert.assertNotNull(userAuthToken);
+        }else {
+            System.out.println("Invalid message");
+        }
+    }
+
+    public static String getUserId(){
+        return userId;
+    }
+
+    public static String getUserAuthToken(){
+        return userAuthToken;
+    }
+
+    @Then("^list view in schema ts_partner\\.freetrial$")
+    public void listViewInSchemaTs_partnerFreetrial() throws Exception {
+        refreshAuthToken();
+        String input = "{\"sqlText\":\"SHOW VIEWS IN SCHEMA \\\"THOUGHTSPOT_PARTNER\\\".\\\"FREETRIAL\\\".\\\"PUBLIC\\\" LIMIT 100;\",\"disableOfflineChunks\":true}";
+
+        Map<String, String> params = new HashMap<>();
+        params.put("requestId", "30137ea0-72c1-11ea-95f2-4bcd0445aaeb");
+
+        Assert.assertNotNull("Jwt auth token cannot be null", jwtAuthToken);
+        String jwt = "Snowflake Token=\"" +  jwtAuthToken  + "\"";
+        System.out.println(jwt);
+
+        Response response = Util
+                .sendSFPostRequest(Constants.SNOWFLAKE_QUERY, input, params, jwt);
+        System.out.println(response);
+        Util.verifyExpectedResponse(response, Response.Status.OK);
+    }
+
+    @Then("^list tables in schema ts_partner\\.freetrial$")
+    public void listTablesInSchemaTs_partnerFreetrial() throws Exception {
+        refreshAuthToken();
+        String input = "{\"sqlText\":\"SHOW TABLES IN SCHEMA \\\"THOUGHTSPOT_PARTNER\\\".\\\"FREETRIAL\\\".\\\"PUBLIC\\\" LIMIT 100;\",\"disableOfflineChunks\":true}";
+
+        Map<String, String> params = new HashMap<>();
+        params.put("requestId", "30135790-72c1-11ea-95f2-4bcd0445aaeb");
+
+        Assert.assertNotNull("Jwt auth token cannot be null", jwtAuthToken);
+        String jwt = "Snowflake Token=\"" +  jwtAuthToken  + "\"";
+        System.out.println(jwt);
+
+        Response response = Util
+                .sendSFPostRequest(Constants.SNOWFLAKE_QUERY, input, params, jwt);
+        System.out.println(response);
+        Util.verifyExpectedResponse(response, Response.Status.OK);
         AssertQueryRequestResponse(response);
+    }
+
+    @Then("^use role AccountAdmin$")
+    public void useRoleAccountAdmin() throws Exception {
+        refreshAuthToken();
+        String input = "{\"sqlText\":\"USE ROLE \\\"ACCOUNTADMIN\\\";\",\"disableOfflineChunks\":true}";
+
+        Map<String, String> params = new HashMap<>();
+        params.put("requestId", "2ea91930-72c1-11ea-95f2-4bcd0445aaeb");
+
+        Assert.assertNotNull("Jwt auth token cannot be null", jwtAuthToken);
+        String jwt = "Snowflake Token=\"" +  jwtAuthToken  + "\"";
+        System.out.println(jwt);
+
+        Response response = Util
+                .sendSFPostRequest(Constants.SNOWFLAKE_QUERY, input, params, jwt);
+        System.out.println(response);
+        Util.verifyExpectedResponse(response, Response.Status.OK);
+
+    }
+
+    @Then("^Bootstrap data request$")
+    public void bootstrapDataRequest() throws Exception {
+        refreshAuthToken();
+        String input = "{\"dataOptions\":{\"CDN_CHANNEL\":null},\"dataKinds\":[\"ACCOUNT\",\"CURRENT_SESSION\",\"PWD_CHANGE_INFO\",\"WAREHOUSES\",\"DATABASES\",\"CLIENT_PARAMS_INFO\",\"TUTORIAL_SCRIPTS_INFO\",\"MESSAGES\",\"UI_VERSION\"]}";
+        Map<String, String> params = new HashMap<>();
+        params.put("requestId", "9500bdb0-6ed3-11ea-b312-49172493a6a6");
+
+        Assert.assertNotNull("Jwt auth token cannot be null", jwtAuthToken);
+        String jwt = "Snowflake Token=\"" +  jwtAuthToken  + "\"";
+        System.out.println(jwt);
+
+        Response response = Util
+                .sendSFPostRequest(Constants.SNOWFLAKE_BOOTSTRAP, input, params, jwt);
+        System.out.println(response);
+        Util.verifyExpectedResponse(response, Response.Status.OK);
+    }
+
+    @Then("^MFA Enrollment request$")
+    public void mfaEnrollmentRequest() throws Exception {
+        refreshAuthToken();
+        String input = "{\"action\":\"MFA_CHECK_INFO\"}";
+
+        Assert.assertNotNull("Jwt auth token cannot be null", jwtAuthToken);
+        String jwt = "Snowflake Token=\"" +  jwtAuthToken  + "\"";
+        System.out.println(jwt);
+
+        Response response = Util
+                .sendSFPostRequest(Constants.SNOWFLAKE_MFA_REENROLLMENT, input, null, jwt);
+        System.out.println(response);
+        Util.verifyExpectedResponse(response, Response.Status.OK);
+    }
+
+    @Then("^Close Container Button$")
+    public void closeContainerButton() throws Exception {
+        refreshAuthToken();
+        Assert.assertNotNull("Jwt auth token cannot be null", jwtAuthToken);
+        String jwt = "Snowflake Token=\"" +  jwtAuthToken  + "\"";
+        System.out.println(jwt);
+
+        Response response = Util
+                .sendGetRequestWithJwtAuth(Constants.SNOWFLAKE_CLOSE_BUTTON, jwt, null);
+        System.out.println(response);
+        Util.verifyExpectedResponse(response, Response.Status.OK);
     }
 }

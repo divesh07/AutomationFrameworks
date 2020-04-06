@@ -44,7 +44,7 @@ public class CommonAPIActions {
     }*/
 
     @Given("validate session login")
-    public void sessionLogin() throws Exception {
+    public String sessionLogin() throws Exception {
         MultivaluedMap<String, String> formData = new MultivaluedHashMap<String, String>();
         formData.add("username", Constants.CUSTOMER_USERNAME);
         formData.add("password", Constants.CUSTOMER_PASSWORD);
@@ -71,6 +71,7 @@ public class CommonAPIActions {
 
         System.out.println("User guid : "+ userGUID);
         userId = userGUID;
+        return userGUID;
     }
 
     @Then("^validate session info$")
@@ -321,6 +322,7 @@ public class CommonAPIActions {
             Assert.assertNotNull(headerObject.get("id"));
             if (headerObject.get("name").toString().equalsIgnoreCase(Constants.SNOWFLAKE_CONNECTION_NAME) ) {
                 connectionId = headerObject.get("id").toString();
+                Assert.assertNotNull(connectionId);
             }
             Assert.assertNotNull(headerObject.get("indexVersion"));
             Assert.assertNotNull(headerObject.get("indexVersion"));
@@ -477,6 +479,7 @@ public class CommonAPIActions {
     @Then("^Export connection as YAML$")
     public void exportConnectionAsYAML() throws Exception {
         Assert.assertNotNull(connectionId);
+        System.out.println(connectionId);
         Map<String, String> params = new HashMap<>();
         params.put("id", connectionId);
 
@@ -610,12 +613,5 @@ public class CommonAPIActions {
         Assert.assertNotNull("isDeleted cannot be null", isDeleted.toString());
         Boolean isHidden = (Boolean) header.get("isHidden");
         Assert.assertNotNull("isHidden cannot be null", isHidden.toString());
-
     }
-
-
-
-
-
-
 }

@@ -13,12 +13,10 @@ public class Constants {
             + ".snowflakecomputing.com/console/login";
 
     public static final String TRIAL_HOST = "try.thoughtspot.com";
-    public static final String TS_TRIAL_CLUSTER_URL = "http://" + TRIAL_HOST ;
+    public static final String TS_TRIAL_CLUSTER_URL = "https://" + TRIAL_HOST ;
     public static final String TS_TRIAL_BASE = TS_TRIAL_CLUSTER_URL + "/callosum/v1/";
     public static final String TS_TRIAL_SESSION = TS_TRIAL_BASE + "session";
-    public static final String TS_TRIAL_SESSION_INFO = TS_TRIAL_SESSION + "/info";
     public static final String TS_TRIAL_SYSTEM_CONFIG = TS_TRIAL_BASE + "system/config";
-
 
     public static final int MAX_FIND_ELEMENT_ATTEMPTS = 3;
     public static final int AUTO_REFRESH_UI_IMPLICIT_WAIT_SECONDS = 3;
@@ -32,6 +30,9 @@ public class Constants {
 
     public static final String TRIAL_USERNAME = "sameer.satyam@thoughtspot.com";
     public static final String TRIAL_PASSWORD = "th0ught$p0t";
+    public static final String TRIAL_ADMIN_USERNAME = "tsadmin";
+    public static final String TRIAL_ADMIN_PASSWORD = "th0ughtSp0t!";
+    public static final String TRIAL_ADMIN_DISPLAYNAME = "Administrator";
     public static final String TRIAL_USER_DISPLAYNAME = "SAMEER SATYAM";
     public static final String TRIAL_USER_EMAIL = "sameer.satyam@thoughtspot.com";
 
@@ -49,7 +50,6 @@ public class Constants {
     public static final String SNOWFLAKE_CONNECTION_NAME = "testConn";
     public static final String SNOWFLAKE_DESRIPTION = "Desc";
 
-
     public static final String SESSION = CLUSTER_BASE_PATH + "session/";
     public static final String SESSION_LOGIN = SESSION + "login";
     public static final String SESSION_INFO = SESSION + "info";
@@ -61,11 +61,15 @@ public class Constants {
     public static final String SESSION_USER = SESSION + "user";
     public static final String SESSION_USER_DELETE = SESSION_USER + "/delete/";
 
-    public static final String TRIAL_SESSION = CLUSTER_BASE_PATH + "session/";
-    public static final String TRIAL_SESSION_LOGIN = TRIAL_SESSION + "login";
-    public static final String SHORT_LIVED_LOGIN = TRIAL_SESSION + "shortlivedlogin";
-    public static final String TRIAL_SESSION_INFO = TRIAL_SESSION + "info";
-    public static final String TRIAL_USER_ACTIVATE = TRIAL_SESSION + "user/activate";
+    public static final String TRIAL_SESSION_LOGIN = TS_TRIAL_SESSION + "/login";
+    public static final String TRIAL_SHORT_LIVED_LOGIN = TS_TRIAL_SESSION + "/shortlivedlogin";
+    public static final String TRIAL_SESSION_INFO = TS_TRIAL_SESSION + "/info";
+    public static final String TRIAL_SESSION_LOGOUT = TS_TRIAL_SESSION + "/logout";
+    public static final String TRIAL_USER_ACTIVATE = TS_TRIAL_SESSION + "/user/activate";
+    public static final String TRIAL_SESSION_USER_DELETE = TS_TRIAL_SESSION + "/user/deleteusers";
+    public static final String TRIAL_SESSION_GROUP_DELETE = TS_TRIAL_SESSION + "/group"
+            + "/deletegroups";
+    public static final String TRIAL_SESSION_SEARCH_GROUP = TS_TRIAL_BASE + "metadata/list";
 
     public static final String GROUP_NAME = "testGroup";
     public static final String GROUP_TYPE = "LOCAL_GROUP";
@@ -94,9 +98,11 @@ public class Constants {
     public static final String SNOWFLAKE_CONSOLE = SNOWFLAKE_BASE + "console/";
     public static final String SNOWFLAKE_QUERY = SNOWFLAKE_BASE + "queries/v1/query-request";
     public static final String SNOWFLAKE_LOGOUT = SNOWFLAKE_BASE + "session/logout-request";
-
     public static final String SNOWFLAKE_ACTION = SNOWFLAKE_CONSOLE + "action-request";
-
+    public static final String SNOWFLAKE_BOOTSTRAP = SNOWFLAKE_CONSOLE + "bootstrap-data-request";
+    public static final String SNOWFLAKE_MFA_REENROLLMENT = SNOWFLAKE_BASE + "session/mfa"
+            + "-enrollment-request";
+    public static final String SNOWFLAKE_CLOSE_BUTTON = SNOWFLAKE_BASE + "assets/ui/resources/scripts/sleet/resources/images/button-close.svg";
 
     public static final String DRIVER_LOC="/usr/local/Cellar/geckodriver/0.26.0/bin/geckodriver";
     public static final Boolean ENBALE_UI = false;
