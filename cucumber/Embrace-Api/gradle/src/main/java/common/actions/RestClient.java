@@ -1,8 +1,8 @@
 package common.actions;
 
-import com.google.common.net.HttpHeaders;
-import org.glassfish.jersey.jsonp.JsonProcessingFeature;
-import org.glassfish.jersey.media.multipart.MultiPartFeature;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 import javax.json.stream.JsonGenerator;
 import javax.ws.rs.client.Client;
@@ -10,9 +10,11 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+
+import org.glassfish.jersey.jsonp.JsonProcessingFeature;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
+
+import com.google.common.net.HttpHeaders;
 
 /**
  * Jersey client utility methods to be used for tooling and test code only.
@@ -28,11 +30,8 @@ public class RestClient {
      * @param authToken
      * @return javax.ws.rs.client.Invocation.Builder
      */
-    public static Invocation.Builder createRequestBuilder(Client c,
-                                                          String path,
-                                                          Map<String, ?> queryParams,
-                                                          List<MediaType> acceptedMediaTypes,
-                                                          String authToken) {
+    public static Invocation.Builder createRequestBuilder(Client c, String path,
+            Map<String, ?> queryParams, List<MediaType> acceptedMediaTypes, String authToken) {
         WebTarget target = c.target(path);
 
         if (queryParams != null) {
@@ -63,10 +62,8 @@ public class RestClient {
     }
 
     protected static ClientBuilder getBuilder() {
-        return ClientBuilder.newBuilder()
-                .register(JsonProcessingFeature.class)
-                .register(MultiPartFeature.class)
-                .property(JsonGenerator.PRETTY_PRINTING, true);
+        return ClientBuilder.newBuilder().register(JsonProcessingFeature.class)
+                .register(MultiPartFeature.class).property(JsonGenerator.PRETTY_PRINTING, true);
     }
 
     /**

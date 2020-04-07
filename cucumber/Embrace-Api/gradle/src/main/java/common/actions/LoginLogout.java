@@ -1,14 +1,14 @@
 package common.actions;
 
-import cucumber.api.java.en.Given;
-import cucumber.api.java.en.Then;
 import org.openqa.selenium.WebDriver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cucumber.api.java.en.Then;
+
 public class LoginLogout {
 
-    /*private static final Logger LOG = LoggerFactory.getLogger(LoginLogout.class);
+    private static final Logger LOG = LoggerFactory.getLogger(LoginLogout.class);
 
     private WebDriver driver;
 
@@ -26,19 +26,19 @@ public class LoginLogout {
         customerLogin(Constants.CUSTOMER_USERNAME, Constants.CUSTOMER_PASSWORD);
     }
 
-    *//**
+    /**
      * Launches login page with given URL and verifies page title if specified
      *
      * @param loginUrl
      * @param expectedPageTitle
      * @throws Throwable
-     *//*
+     */
     public void launchLoginPage(String loginUrl, String expectedPageTitle) throws Throwable {
         UIActions.loginPage(driver, loginUrl);
         if (expectedPageTitle != null) {
             UIActions.verifyPageTitle(driver, expectedPageTitle);
         }
-        UIActions.waitForPageLoaded(driver, (int)Constants.UI_IMPLICIT_WAIT);
+        UIActions.waitForPageLoaded(driver, (int) Constants.UI_IMPLICIT_WAIT);
 
     }
 
@@ -50,6 +50,6 @@ public class LoginLogout {
 
         UIActions.clickElement(driver, WebElementMappingConstants.uiToTest.get("Login"));
         LOG.info("Selected login button");
-    }*/
+    }
 
 }

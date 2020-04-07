@@ -8,7 +8,6 @@ public class WebElementMappingConstants {
     public static final Map<String, String> uiToTest;
     static {
         Map<String, String> uiToTestTemp = new HashMap<>();
-        //Generic
         uiToTestTemp.put("Login", "//button[contains(text(),'')]");
         uiToTest = Collections.unmodifiableMap(uiToTestTemp);
     }

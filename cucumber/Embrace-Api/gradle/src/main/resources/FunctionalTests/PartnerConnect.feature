@@ -42,4 +42,3 @@ Feature: Partner Connect API Validation Test
     Then MFA Enrollment request
     Then Close Container Button
     Then Logout from Snowflake
-

@@ -16,16 +16,16 @@ import javax.ws.rs.core.MultivaluedMap;
 
 import org.apache.log4j.Logger;
 
-
 /**
- * Jersey client that does not verify SSL certificates.
- * To be used for tooling and test code only.
+ * Jersey client that does not verify SSL certificates. To be used for tooling and test code only.
  */
 public class InsecureClient extends RestClient {
 
     private static final Logger LOG = Logger.getLogger(InsecureClient.class);
 
-    private static final TrustManager[] allTrustingCertManager = new TrustManager[]{new InsecureTrustManager()};
+    private static final TrustManager[] allTrustingCertManager = new TrustManager[] {
+            new InsecureTrustManager()
+    };
 
     private static final SSLContext insecureSslContext;
 
@@ -55,10 +55,10 @@ public class InsecureClient extends RestClient {
      * @return javax.ws.rs.client.Invocation.Builder
      */
     public static Invocation.Builder createRequestBuilder(String path,
-                                                          Map<String, String> queryParams,
-                                                          List<MediaType> acceptedMediaTypes,
-                                                          String authToken) {
-        return RestClient.createRequestBuilder(createClient(), path, queryParams, acceptedMediaTypes, authToken);
+            Map<String, String> queryParams, List<MediaType> acceptedMediaTypes, String authToken) {
+        return RestClient
+                .createRequestBuilder(createClient(), path, queryParams, acceptedMediaTypes,
+                        authToken);
     }
 
     /**
@@ -71,10 +71,11 @@ public class InsecureClient extends RestClient {
      * @return javax.ws.rs.client.Invocation.Builder
      */
     public static Invocation.Builder createRequestBuilder(String path,
-                                                          MultivaluedMap<String, String> queryParams,
-                                                          List<MediaType> acceptedMediaTypes,
-                                                          String authToken) {
-        return RestClient.createRequestBuilder(createClient(), path, queryParams, acceptedMediaTypes, authToken);
+            MultivaluedMap<String, String> queryParams, List<MediaType> acceptedMediaTypes,
+            String authToken) {
+        return RestClient
+                .createRequestBuilder(createClient(), path, queryParams, acceptedMediaTypes,
+                        authToken);
     }
 
     /**
@@ -86,9 +87,9 @@ public class InsecureClient extends RestClient {
      * @return
      */
     public static Invocation.Builder createRequestBuilder(String path,
-                                                          List<MediaType> acceptedMediaTypes,
-                                                          String authToken) {
-        return RestClient.createRequestBuilder(createClient(), path, Collections.emptyMap(), acceptedMediaTypes, authToken);
+            List<MediaType> acceptedMediaTypes, String authToken) {
+        return RestClient.createRequestBuilder(createClient(), path, Collections.emptyMap(),
+                acceptedMediaTypes, authToken);
     }
 
     /**
@@ -97,10 +98,8 @@ public class InsecureClient extends RestClient {
      * @return javax.ws.rs.client.Client
      */
     public static Client createClient() {
-        return RestClient.getBuilder()
-                .sslContext(insecureSslContext)
-                .hostnameVerifier((s1, s2) -> true)
-                .build();
+        return RestClient.getBuilder().sslContext(insecureSslContext)
+                .hostnameVerifier((s1, s2) -> true).build();
     }
 
     /**

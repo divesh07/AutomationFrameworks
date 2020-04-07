@@ -18,17 +18,32 @@ public class VerifyElements {
         this.driver = driver;
     }
 
+    /**
+     * @param pageTitle
+     * @throws Throwable
+     */
     @Then("^verify page title is \"([^\"]*)\"$")
     public void verifyPageTitleSteps(String pageTitle) throws Throwable {
         UIActions.verifyPageTitle(driver, pageTitle);
         LOG.info("Verified page title is {}", pageTitle);
     }
 
+    /**
+     * @param pattern
+     * @param element
+     * @throws Throwable
+     */
     @And("^wait for (button|element|text|pop-up) \"([^\"]*)\" to exist$")
     public void waitForElementToExist(String pattern, String element) throws Throwable {
         waitForNumberOfElementsToExist(1, pattern, element);
     }
 
+    /**
+     * @param number
+     * @param pattern
+     * @param element
+     * @throws Throwable
+     */
     @And("^wait for ([0-9]+) of (button|element|text|pop-up) \"([^\"]*)\" to exist$")
     public void waitForNumberOfElementsToExist(int number, String pattern, String element) throws Throwable {
         // text is a special case
@@ -47,6 +62,10 @@ public class VerifyElements {
         }
     }
 
+    /**
+     * @param element
+     * @throws Throwable
+     */
     @When("^click on (?:button|link|element): \"([^\"]*)\"$")
     public void clickOnElement(String element) throws Throwable {
         if (WebElementMappingConstants.uiToTest.containsKey(element)) {

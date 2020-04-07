@@ -35,8 +35,9 @@ public class UIActions {
             WebDriverWait wait = new WebDriverWait(driver, Constants.UI_IMPLICIT_WAIT);
             wait.until(ExpectedConditions.titleContains(pageTitle));
         } catch (TimeoutException handled) {
-            throw new Exception("Verification failed - Expected Page title:" + pageTitle + " Actual Page title:"
-                    + driver.getTitle() + " ", handled);
+            throw new Exception(
+                    "Verification failed - Expected Page title:" + pageTitle + " Actual Page title:"
+                            + driver.getTitle() + " ", handled);
         }
     }
 
@@ -44,27 +45,29 @@ public class UIActions {
         ExpectedCondition<Boolean> expectation = new ExpectedCondition<Boolean>() {
             @Override
             public Boolean apply(WebDriver driver) {
-                return ((JavascriptExecutor) driver).executeScript("return document.readyState").equals("complete");
+                return ((JavascriptExecutor) driver).executeScript("return document.readyState")
+                        .equals("complete");
             }
         };
         WebDriverWait wait = new WebDriverWait(driver, timeout);
         wait.until(expectation);
     }
 
-    public static void verifyElementState(WebDriver driver, String element, boolean expectedState) throws Exception {
+    public static void verifyElementState(WebDriver driver, String element, boolean expectedState)
+            throws Exception {
         boolean elementState = findElement(driver, element).isEnabled();
         if (elementState != expectedState) {
-            throw new Exception(element + " Verification failed - Expected State:" + expectedState + " Actual State:"
-                    + elementState);
+            throw new Exception(element + " Verification failed - Expected State:" + expectedState
+                    + " Actual State:" + elementState);
         }
     }
 
     /**
-     * Returns the first WebElement in the list of web elements that can be identified by the given element string. Throws a
-     * customized Exception if no such element exists.
+     * Returns the first WebElement in the list of web elements that can be identified by the given
+     * element string. Throws a customized Exception if no such element exists.
      * <p>
-     * NOTE: assuming that we use unique identifiers for each web element on a page, we can safely use this to find unique
-     * elements.
+     * NOTE: assuming that we use unique identifiers for each web element on a page, we can safely
+     * use this to find unique elements.
      *
      * @param driver
      * @param element
@@ -76,7 +79,8 @@ public class UIActions {
     }
 
     /**
-     * Find an element within the given timeout. Throws Exception when no element can be found in the given time.
+     * Find an element within the given timeout. Throws Exception when no element can be found in
+     * the given time.
      *
      * @param driver
      * @param element
@@ -84,7 +88,8 @@ public class UIActions {
      * @return
      * @throws Exception
      */
-    public static WebElement findElement(WebDriver driver, String element, int timeoutInSec) throws Exception {
+    public static WebElement findElement(WebDriver driver, String element, int timeoutInSec)
+            throws Exception {
         ExpectedCondition<WebElement> expectedCondition = new ExpectedCondition<WebElement>() {
 
             @Override
@@ -106,8 +111,8 @@ public class UIActions {
     }
 
     /**
-     * Returns all WebElements in the list of web elements that can be identified by the given element string. Throws a customized
-     * Exception if no such elements exist.
+     * Returns all WebElements in the list of web elements that can be identified by the given
+     * element string. Throws a customized Exception if no such elements exist.
      *
      * @param driver
      * @param element
@@ -124,14 +129,15 @@ public class UIActions {
     }
 
     /**
-     * Returns all WebElements in the list of web elements that can be identified by the given element string. Returns null if no
-     * such elements exist. .
+     * Returns all WebElements in the list of web elements that can be identified by the given
+     * element string. Returns null if no such elements exist. .
      *
      * @param driver
      * @param element
      * @return List<WebElement>
      */
-    public static List<WebElement> findElementsNoExceptionIfNull(WebDriver driver, String element) throws Exception {
+    public static List<WebElement> findElementsNoExceptionIfNull(WebDriver driver, String element)
+            throws Exception {
         int attempts = 0;
         while (attempts < Constants.MAX_FIND_ELEMENT_ATTEMPTS) {
             try {
@@ -144,11 +150,11 @@ public class UIActions {
     }
 
     /**
-     * Returns a list of WebElements that can be identified by the given element string. Returns null if no elements can be found
-     * using the expression passed.
+     * Returns a list of WebElements that can be identified by the given element string. Returns
+     * null if no elements can be found using the expression passed.
      * <p>
-     * NOTE#1: this is highly unlikely but it is possible for the wrong elements to be identified by mistake (for example, if an
-     * element's id has the form of another element's xpath identifier)
+     * NOTE#1: this is highly unlikely but it is possible for the wrong elements to be identified by
+     * mistake (for example, if an element's id has the form of another element's xpath identifier)
      * <p>
      * NOTE#2: we strongly encourage finding elements by xpath for best performance of this method
      *
@@ -156,7 +162,8 @@ public class UIActions {
      * @param element
      * @return List<WebElement>
      */
-    public static List<WebElement> findElementsOnce(WebDriver driver, String element) throws Exception {
+    public static List<WebElement> findElementsOnce(WebDriver driver, String element)
+            throws Exception {
         int timeout;
         int elementSearchTimeout;
 
@@ -171,7 +178,8 @@ public class UIActions {
             try {
                 List<WebElement> elements = driver.findElements(selector);
                 if (elements.size() > 0) {
-                    driver.manage().timeouts().implicitlyWait(Constants.UI_IMPLICIT_WAIT, TimeUnit.SECONDS);
+                    driver.manage().timeouts()
+                            .implicitlyWait(Constants.UI_IMPLICIT_WAIT, TimeUnit.SECONDS);
                     return elements;
                 }
             } catch (InvalidSelectorException ignored) {
@@ -181,28 +189,31 @@ public class UIActions {
         return null;
     }
 
-    public static void verifyElementStateById(WebDriver driver, String element, boolean expectedState) throws Exception {
+    public static void verifyElementStateById(WebDriver driver, String element,
+            boolean expectedState) throws Exception {
         boolean elementState = driver.findElement(By.id(element)).isEnabled();
         if (elementState != expectedState) {
-            throw new Exception(element + " Verification failed - Expected State:" + expectedState + " Actual State:"
-                    + elementState);
+            throw new Exception(element + " Verification failed - Expected State:" + expectedState
+                    + " Actual State:" + elementState);
         }
     }
 
-    public static void verifyElementStateByCSSSelector(WebDriver driver, String element, boolean expectedState) throws Exception {
+    public static void verifyElementStateByCSSSelector(WebDriver driver, String element,
+            boolean expectedState) throws Exception {
         boolean elementState = driver.findElement(By.cssSelector(element)).isEnabled();
         if (elementState != expectedState) {
-            throw new Exception(element + " Verification failed - Expected State:" + expectedState + " Actual State:"
-                    + elementState);
+            throw new Exception(element + " Verification failed - Expected State:" + expectedState
+                    + " Actual State:" + elementState);
         }
     }
 
-    public static void verifyElementStateByXpath(WebDriver driver, String element, boolean expectedState) throws Exception {
+    public static void verifyElementStateByXpath(WebDriver driver, String element,
+            boolean expectedState) throws Exception {
 
         boolean elementState = driver.findElement(By.xpath(element)).isEnabled();
         if (elementState != expectedState) {
-            throw new Exception(element + " Verification failed - Expected State:" + expectedState + " Actual State:"
-                    + elementState);
+            throw new Exception(element + " Verification failed - Expected State:" + expectedState
+                    + " Actual State:" + elementState);
         }
     }
 
@@ -212,23 +223,28 @@ public class UIActions {
         enterTextInWebElement(driver, text, webElement);
     }
 
-    public static void scrollToViewByElement(WebDriver driver, WebElement scrollElement) throws Exception {
-        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", scrollElement);
+    public static void scrollToViewByElement(WebDriver driver, WebElement scrollElement)
+            throws Exception {
+        ((JavascriptExecutor) driver)
+                .executeScript("arguments[0].scrollIntoView(true);", scrollElement);
     }
 
-    public static void enterTextInWebElement(WebDriver driver, String text, WebElement element) throws Exception {
+    public static void enterTextInWebElement(WebDriver driver, String text, WebElement element)
+            throws Exception {
         clickWebElement(driver, element);
         if (element.getAttribute("class").toLowerCase().contains("form")) {
             element.clear();
         }
         element.sendKeys(text);
     }
+
     public static void clickWebElement(WebDriver driver, WebElement element) throws Exception {
-        waitForElementToBeClickable(driver, element, (int)Constants.UI_IMPLICIT_WAIT);
+        waitForElementToBeClickable(driver, element, (int) Constants.UI_IMPLICIT_WAIT);
         element.click();
     }
 
-    public static void waitForElementToBeClickable(WebDriver driver, WebElement webElement, int timeout) throws Exception {
+    public static void waitForElementToBeClickable(WebDriver driver, WebElement webElement,
+            int timeout) throws Exception {
         WebDriverWait wait = new WebDriverWait(driver, timeout);
         wait.until(ExpectedConditions.elementToBeClickable(webElement));
     }
@@ -244,19 +260,19 @@ public class UIActions {
      * @param driver
      * @param element
      * @param numberElementsExpected
-     * @param timeoutInSec
-     *            in seconds
+     * @param timeoutInSec           in seconds
      * @throws Exception
      */
-    public static void waitForElementsExist(WebDriver driver, String element, int numberElementsExpected, int timeoutInSec)
-            throws Exception {
+    public static void waitForElementsExist(WebDriver driver, String element,
+            int numberElementsExpected, int timeoutInSec) throws Exception {
         ExpectedCondition<Boolean> expectation = new ExpectedCondition<Boolean>() {
             @Override
             public Boolean apply(WebDriver driver) {
                 try {
                     int numberElementsFound = 0;
                     if (UIActions.findElementsNoExceptionIfNull(driver, element) != null) {
-                        numberElementsFound = UIActions.findElementsNoExceptionIfNull(driver, element).size();
+                        numberElementsFound = UIActions
+                                .findElementsNoExceptionIfNull(driver, element).size();
                         LOG.info("Number of elements found {}", numberElementsFound);
                     }
                     return numberElementsFound == numberElementsExpected;
@@ -277,7 +293,8 @@ public class UIActions {
 
     public static void scrollToView(WebDriver driver, String element) throws Exception {
         WebElement scrollElement = findElement(driver, element);
-        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", scrollElement);
+        ((JavascriptExecutor) driver)
+                .executeScript("arguments[0].scrollIntoView(true);", scrollElement);
     }
 
 }

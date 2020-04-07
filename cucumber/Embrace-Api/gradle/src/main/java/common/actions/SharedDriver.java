@@ -15,14 +15,14 @@ public class SharedDriver extends EventFiringWebDriver {
     public static final String WEBDRIVER_DOWNLOAD_PATH = Constants.DRIVER_LOC;
 
     public SharedDriver() throws Throwable {
-            super(getBrowserDriver());
+        super(getBrowserDriver());
     }
 
     public static WebDriver getBrowserDriver() throws Throwable {
-            System.setProperty("webdriver.gecko.driver", WEBDRIVER_DOWNLOAD_PATH);
-            driver = new FirefoxDriver();
-            driver.manage().window().maximize();
-            return driver;
+        System.setProperty("webdriver.gecko.driver", WEBDRIVER_DOWNLOAD_PATH);
+        driver = new FirefoxDriver();
+        driver.manage().window().maximize();
+        return driver;
     }
 
 }

@@ -39,8 +39,6 @@ Feature: Partner Connect API Validation Test
   Scenario: Partner Connect cleanup actions
     Then Remove ETL integration
     Then Bootstrap data request
-    #Then list Bootstrap data
     Then MFA Enrollment request
     Then Close Container Button
     Then Logout from Snowflake
-

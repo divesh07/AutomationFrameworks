@@ -43,14 +43,17 @@ public class CommonAPIActions {
         this.driver = driver;
     }*/
 
+    /**
+     * @return
+     * @throws Exception
+     */
     @Given("validate session login")
     public String sessionLogin() throws Exception {
         MultivaluedMap<String, String> formData = new MultivaluedHashMap<String, String>();
         formData.add("username", Constants.CUSTOMER_USERNAME);
         formData.add("password", Constants.CUSTOMER_PASSWORD);
 
-        Response sessionLogin = Util
-                .sendPostRequestNoAuth(Constants.SESSION_LOGIN, formData, null);
+        Response sessionLogin = Util.sendPostRequestNoAuth(Constants.SESSION_LOGIN, formData, null);
         System.out.println(sessionLogin);
         Util.verifyExpectedResponse(sessionLogin, Response.Status.OK);
         Cookie sessionId = sessionLogin.getCookies().get("JSESSIONID");
@@ -69,11 +72,14 @@ public class CommonAPIActions {
         String userGUID = (String) responseObject.get("userGUID");
         Assert.assertNotNull("User GUID cannot be empty", userGUID);
 
-        System.out.println("User guid : "+ userGUID);
+        System.out.println("User guid : " + userGUID);
         userId = userGUID;
         return userGUID;
     }
 
+    /**
+     * @throws Exception
+     */
     @Then("^validate session info$")
     public void validateSessionInfo() throws Exception {
         Response response = Util.sendGetRequestAuth(Constants.SESSION_INFO, null);
@@ -84,6 +90,9 @@ public class CommonAPIActions {
         System.out.println(responseObject);
     }
 
+    /**
+     * @throws Exception
+     */
     @Then("^validate session isActive$")
     public void validateSessionIsActive() throws Exception {
         Response response = Util.sendGetRequestAuth(Constants.SESSION_ISACTIVE, null);
@@ -91,6 +100,9 @@ public class CommonAPIActions {
         Util.verifyExpectedResponse(response, Response.Status.NO_CONTENT);
     }
 
+    /**
+     * @throws Exception
+     */
     @Then("^get session privileges$")
     public void getSessionPrivileges() throws Exception {
         Response response = Util.sendGetRequestAuth(Constants.SESSION_PRIVILEGES, null);
@@ -112,6 +124,9 @@ public class CommonAPIActions {
         Assert.assertTrue("", responseObject.toString().contains("DATADOWNLOADING"));
     }
 
+    /**
+     * @throws Exception
+     */
     @Then("^get user guid of the current session$")
     public void getUserGuid() throws Exception {
         Response response = Util.sendGetRequestAuth(Constants.SESSION_USER, null);
@@ -119,6 +134,9 @@ public class CommonAPIActions {
         Util.verifyExpectedResponse(response, Response.Status.NO_CONTENT);
     }
 
+    /**
+     * @throws Exception
+     */
     @Then("^create a user with weak password$")
     public void validateUserCreationWeakPassword() throws Exception {
         MultivaluedMap<String, String> formData = new MultivaluedHashMap<String, String>();
@@ -136,10 +154,13 @@ public class CommonAPIActions {
         JSONParser responseParser = new JSONParser();
         JSONObject responseObject = (JSONObject) responseParser.parse(Util.readResponse(response));
         String failureReason = (String) responseObject.get("debug");
-        Assert.assertTrue("Weak password not found as a failure reason",failureReason.contains(
-                "Weak Password"));
+        Assert.assertTrue("Weak password not found as a failure reason",
+                failureReason.contains("Weak Password"));
     }
 
+    /**
+     * @throws Exception
+     */
     @Then("^create a user with valid password$")
     public void validateUserCreationValidPassword() throws Exception {
         MultivaluedMap<String, String> formData = new MultivaluedHashMap<String, String>();
@@ -172,6 +193,9 @@ public class CommonAPIActions {
         Assert.assertNotNull("Tenant ID cannot be null", tenantId);
     }
 
+    /**
+     * @throws Exception
+     */
     @Then("^create duplicate user$")
     public void validateFailureCreationOfDuplicateUser() throws Exception {
         MultivaluedMap<String, String> formData = new MultivaluedHashMap<String, String>();
@@ -188,10 +212,13 @@ public class CommonAPIActions {
         JSONParser responseParser = new JSONParser();
         JSONObject responseObject = (JSONObject) responseParser.parse(Util.readResponse(response));
         String failureReason = (String) responseObject.get("debug");
-        Assert.assertTrue("Duplicate username not found as a failure reason",failureReason.contains(
-                "Duplicate username"));
+        Assert.assertTrue("Duplicate username not found as a failure reason",
+                failureReason.contains("Duplicate username"));
     }
 
+    /**
+     * @throws Exception
+     */
     @Then("^create a group$")
     public void createGroup() throws Exception {
         MultivaluedMap<String, String> formData = new MultivaluedHashMap<String, String>();
@@ -222,6 +249,9 @@ public class CommonAPIActions {
         Assert.assertNotNull("Tenant ID cannot be null", tenantId);
     }
 
+    /**
+     * @throws Exception
+     */
     @Then("^list member users for a group$")
     public void listGroupMembers() throws Exception {
         Map<String, String> params = new HashMap<>();
@@ -232,6 +262,9 @@ public class CommonAPIActions {
         Util.verifyExpectedResponse(response, Response.Status.OK);
     }
 
+    /**
+     * @throws Exception
+     */
     @Then("^fetch mindtouch authentication token$")
     public void fetchMindTouchAuthToken() throws Exception {
         Response response = Util.sendGetRequestAuth(Constants.SESSION_MINDTOUCH_TOKEN, null);
@@ -239,6 +272,9 @@ public class CommonAPIActions {
         Util.verifyExpectedResponse(response, Response.Status.OK);
     }
 
+    /**
+     * @throws Exception
+     */
     @Then("^delete an existing user$")
     public void deleteUser() throws Exception {
         String path = Constants.SESSION_USER_DELETE + userId;
@@ -248,6 +284,9 @@ public class CommonAPIActions {
         Util.verifyExpectedResponse(response, Response.Status.NO_CONTENT);
     }
 
+    /**
+     * @throws Exception
+     */
     @Then("^delete existing user group$")
     public void deleteUserGroup() throws Exception {
         String path = Constants.SESSION_USER_GROUP_DELETE + groupId;
@@ -257,6 +296,9 @@ public class CommonAPIActions {
         Util.verifyExpectedResponse(response, Response.Status.NO_CONTENT);
     }
 
+    /**
+     * @throws Exception
+     */
     @Then("^validate session logout$")
     public void validateSessionLogout() throws Exception {
         MultivaluedMap<String, String> formData = new MultivaluedHashMap<String, String>();
@@ -267,10 +309,12 @@ public class CommonAPIActions {
         Util.verifyExpectedResponse(response, Response.Status.NO_CONTENT);
     }
 
+    /**
+     * @throws Exception
+     */
     @Given("^fetch Connection types$")
     public void fetchConnectionTypes() throws Exception {
-        Response response = Util
-                .sendGetRequestAuth(Constants.CONNECTION_TYPES, null);
+        Response response = Util.sendGetRequestAuth(Constants.CONNECTION_TYPES, null);
         System.out.println(response);
         Util.verifyExpectedResponse(response, Response.Status.OK);
 
@@ -280,7 +324,7 @@ public class CommonAPIActions {
         Assert.assertTrue("Expected support for four data warehouses", responseObject.size() == 4);
 
         Iterator<JSONObject> iterator = responseObject.iterator();
-        while(iterator.hasNext()){
+        while (iterator.hasNext()) {
             System.out.println(iterator.next());
             Assert.assertNotNull(iterator.next().get("name"));
             Assert.assertNotNull(iterator.next().get("displayName"));
@@ -288,6 +332,9 @@ public class CommonAPIActions {
         }
     }
 
+    /**
+     * @throws Exception
+     */
     @Then("^Get the list of live query connections$")
     public void getTheListOfLiveQueryConnections() throws Exception {
         Map<String, String> params = new HashMap<>();
@@ -295,8 +342,7 @@ public class CommonAPIActions {
         params.put("sort", "DEFAULT");
         params.put("offset", "-1");
 
-        Response response = Util
-                .sendGetRequestAuth(Constants.CONNECTION_LIST, params);
+        Response response = Util.sendGetRequestAuth(Constants.CONNECTION_LIST, params);
         System.out.println(response);
         Util.verifyExpectedResponse(response, Response.Status.OK);
 
@@ -307,20 +353,23 @@ public class CommonAPIActions {
         Boolean value = (Boolean) responseObject.get("isLastBatch");
         JSONObject debugInfo = (JSONObject) responseObject.get("debugInfo");
         JSONObject memcacheAccessDetails = (JSONObject) responseObject.get("memcacheAccessDetails");
-        JSONObject requestCacheAccessDetails = (JSONObject) responseObject.get("requestCacheAccessDetails");
-        JSONObject objectCacheAccessDetails = (JSONObject) responseObject.get("objectCacheAccessDetails");
+        JSONObject requestCacheAccessDetails = (JSONObject) responseObject
+                .get("requestCacheAccessDetails");
+        JSONObject objectCacheAccessDetails = (JSONObject) responseObject
+                .get("objectCacheAccessDetails");
 
         JSONArray headers = (JSONArray) responseObject.get("headers");
         Assert.assertTrue("Expected headers", headers.size() > 0);
 
         Iterator<JSONObject> iterator = headers.iterator();
-        while(iterator.hasNext()){
+        while (iterator.hasNext()) {
             JSONObject headerObject = iterator.next();
             System.out.println(headerObject);
 
             Assert.assertNotNull(headerObject.get("name"));
             Assert.assertNotNull(headerObject.get("id"));
-            if (headerObject.get("name").toString().equalsIgnoreCase(Constants.SNOWFLAKE_CONNECTION_NAME) ) {
+            if (headerObject.get("name").toString()
+                    .equalsIgnoreCase(Constants.SNOWFLAKE_CONNECTION_NAME)) {
                 connectionId = headerObject.get("id").toString();
                 Assert.assertNotNull(connectionId);
             }
@@ -338,10 +387,12 @@ public class CommonAPIActions {
         Assert.assertNotNull("Connection Id cannot be null", connectionId);
     }
 
+    /**
+     * @throws Exception
+     */
     @Then("^Get connection Table Stats$")
     public void getConnectionTableStats() throws Exception {
-        Response response = Util
-                .sendGetRequestAuth(Constants.CONNECTION_TABLE_STATS, null);
+        Response response = Util.sendGetRequestAuth(Constants.CONNECTION_TABLE_STATS, null);
         System.out.println(response);
         Util.verifyExpectedResponse(response, Response.Status.OK);
 
@@ -354,7 +405,7 @@ public class CommonAPIActions {
         JSONArray statsList = (JSONArray) responseObject.get("tableStats");
 
         Iterator<JSONObject> iterator = statsList.iterator();
-        while(iterator.hasNext()) {
+        while (iterator.hasNext()) {
             JSONObject statsObject = iterator.next();
             System.out.println(statsObject);
 
@@ -383,6 +434,9 @@ public class CommonAPIActions {
 
     }
 
+    /**
+     * @throws Exception
+     */
     @Then("^Get connection status$")
     public void getConnectionStatus() throws Exception {
         Assert.assertNotNull(tableId);
@@ -391,8 +445,7 @@ public class CommonAPIActions {
         Map<String, String> params = new HashMap<>();
         params.put("tableguid", tableId);
 
-        Response response = Util
-                .sendGetRequestAuth(Constants.CONNECTION_STATUS, params);
+        Response response = Util.sendGetRequestAuth(Constants.CONNECTION_STATUS, params);
         System.out.println(response);
         Util.verifyExpectedResponse(response, Response.Status.OK);
 
@@ -406,17 +459,23 @@ public class CommonAPIActions {
 
     }
 
+    /**
+     * @throws Exception
+     */
     @Then("^Connect and fetch metadata of Snowflake Connection$")
     public void connectAndFetchMetadataOfSnowflakeConnection() throws Exception {
         MultivaluedMap<String, String> formData = new MultivaluedHashMap<String, String>();
         formData.add("type", Constants.SNOWFLAKE_DATA_SOURCE);
-        formData.add("config", "{\"accountName\":\"" + Constants.SNOWFLAKE_ACCOUNT_NAME +"\","
-                + "\"user\":\"" + Constants.SNOWFLAKE_USER + "\",\"password\":\"" + Constants.SNOWFLAKE_PASSWORD + "\","
-                + "\"role\":\"" + Constants.SNOWFLAKE_ROLE + "\","
-                + "\"warehouse\":\"" + Constants.SNOWFLAKE_WAREHOUSE + "\",\"database\":\"" + Constants.SNOWFLAKE_DATABASE + "\","
-                + "\"schema\":\"" + Constants.SNOWFLAKE_SCHEMA + "\","
-                + "\"connection_name\":\"" + Constants.SNOWFLAKE_CONNECTION_NAME + "\","
-                + "\"description\":\"" + Constants.SNOWFLAKE_DESRIPTION + "\"}");
+        formData.add("config",
+                "{\"accountName\":\"" + Constants.SNOWFLAKE_ACCOUNT_NAME + "\"," + "\"user\":\""
+                        + Constants.SNOWFLAKE_USER + "\",\"password\":\""
+                        + Constants.SNOWFLAKE_PASSWORD + "\"," + "\"role\":\""
+                        + Constants.SNOWFLAKE_ROLE + "\"," + "\"warehouse\":\""
+                        + Constants.SNOWFLAKE_WAREHOUSE + "\",\"database\":\""
+                        + Constants.SNOWFLAKE_DATABASE + "\"," + "\"schema\":\""
+                        + Constants.SNOWFLAKE_SCHEMA + "\"," + "\"connection_name\":\""
+                        + Constants.SNOWFLAKE_CONNECTION_NAME + "\"," + "\"description\":\""
+                        + Constants.SNOWFLAKE_DESRIPTION + "\"}");
 
         Response response = Util
                 .sendPostRequestWithAuthCookie(Constants.CONNECTION_CONNECT, formData, null);
@@ -428,32 +487,37 @@ public class CommonAPIActions {
         JSONObject configuration = (JSONObject) responseObject.get("configuration");
         System.out.println(configuration);
 
-        Assert.assertEquals(Constants.SNOWFLAKE_ACCOUNT_NAME, (String) configuration.get("accountName"));
+        Assert.assertEquals(Constants.SNOWFLAKE_ACCOUNT_NAME,
+                (String) configuration.get("accountName"));
         Assert.assertEquals(Constants.SNOWFLAKE_USER, (String) configuration.get("user"));
         Assert.assertEquals(Constants.SNOWFLAKE_PASSWORD, (String) configuration.get("password"));
         Assert.assertEquals(Constants.SNOWFLAKE_ROLE, (String) configuration.get("role"));
         Assert.assertEquals(Constants.SNOWFLAKE_WAREHOUSE, (String) configuration.get("warehouse"));
         Assert.assertEquals(Constants.SNOWFLAKE_DATABASE, (String) configuration.get("database"));
-        Assert.assertEquals(Constants.SNOWFLAKE_CONNECTION_NAME, (String) configuration.get("connection_name"));
-        Assert.assertEquals(Constants.SNOWFLAKE_DESRIPTION, (String) configuration.get("description"));
+        Assert.assertEquals(Constants.SNOWFLAKE_CONNECTION_NAME,
+                (String) configuration.get("connection_name"));
+        Assert.assertEquals(Constants.SNOWFLAKE_DESRIPTION,
+                (String) configuration.get("description"));
     }
 
-    public void assertStringAndRequiredFields(JSONObject configObject){
-        Assert.assertTrue(configObject.get("dataType").toString().equalsIgnoreCase(
-                "STRING"));
-        Assert.assertTrue(configObject.get("required").toString().equalsIgnoreCase(
-                "true"));
-        Assert.assertTrue(configObject.get("masked").toString().equalsIgnoreCase(
-                "false"));
+    /**
+     * @param configObject
+     */
+    public void assertStringAndRequiredFields(JSONObject configObject) {
+        Assert.assertTrue(configObject.get("dataType").toString().equalsIgnoreCase("STRING"));
+        Assert.assertTrue(configObject.get("required").toString().equalsIgnoreCase("true"));
+        Assert.assertTrue(configObject.get("masked").toString().equalsIgnoreCase("false"));
     }
 
+    /**
+     * @throws Exception
+     */
     @Then("^Get the configuration properties for Snowflake Connection Type$")
     public void getTheConfigurationPropertiesForSnowflakeConnectionType() throws Exception {
         Map<String, String> params = new HashMap<>();
         params.put("type", Constants.SNOWFLAKE_DATA_SOURCE);
 
-        Response response = Util
-                .sendGetRequestAuth(Constants.CONNECTION_CONFIG, params);
+        Response response = Util.sendGetRequestAuth(Constants.CONNECTION_CONFIG, params);
         System.out.println(response);
         Util.verifyExpectedResponse(response, Response.Status.OK);
 
@@ -462,20 +526,23 @@ public class CommonAPIActions {
         System.out.println(responseList);
 
         Iterator<JSONObject> iterator = responseList.iterator();
-        while(iterator.hasNext()) {
+        while (iterator.hasNext()) {
             JSONObject configObject = iterator.next();
             System.out.println(configObject);
 
             Assert.assertNotNull(configObject.get("name"));
-            if(configObject.get("name").toString().equalsIgnoreCase("accountName") ||
-                    configObject.get("name").toString().equalsIgnoreCase("user") ||
-                    configObject.get("name").toString().equalsIgnoreCase("role") ||
-                    configObject.get("name").toString().equalsIgnoreCase("warehouse") ){
+            if (configObject.get("name").toString().equalsIgnoreCase("accountName") || configObject
+                    .get("name").toString().equalsIgnoreCase("user") || configObject.get("name")
+                    .toString().equalsIgnoreCase("role") || configObject.get("name").toString()
+                    .equalsIgnoreCase("warehouse")) {
                 assertStringAndRequiredFields(configObject);
             }
         }
     }
 
+    /**
+     * @throws Exception
+     */
     @Then("^Export connection as YAML$")
     public void exportConnectionAsYAML() throws Exception {
         Assert.assertNotNull(connectionId);
@@ -489,11 +556,14 @@ public class CommonAPIActions {
         System.out.println(response);
         Util.verifyExpectedResponse(response, Response.Status.OK);
 
-        Assert.assertTrue(response.getHeaderString("content-disposition").contains("connection"
-                + ".yaml"));
+        Assert.assertTrue(
+                response.getHeaderString("content-disposition").contains("connection" + ".yaml"));
 
     }
 
+    /**
+     * @throws Exception
+     */
     @Then("^Remove data from falcon for a given external table$")
     public void removeDataFromFalconForAGivenExternalTable() throws Exception {
         Assert.assertNotNull("table id cannot be null", tableId);
@@ -506,35 +576,44 @@ public class CommonAPIActions {
         Util.verifyExpectedResponse(response, Response.Status.NO_CONTENT);
     }
 
+    /**
+     * @throws Exception
+     */
     @Then("^Get the scheduled timely job schedule$")
     public void getTheScheduledTimelyJobSchedule() throws Exception {
         Assert.assertNotNull("table id cannot be null", tableId);
         Map<String, String> params = new HashMap<>();
         params.put("tableguid", tableId);
 
-        Response response = Util
-                .sendGetRequestAuth(Constants.CONNECTION_GETSCHEDULEDJOB, params);
+        Response response = Util.sendGetRequestAuth(Constants.CONNECTION_GETSCHEDULEDJOB, params);
 
         System.out.println(response);
         Util.verifyExpectedResponse(response, Response.Status.OK);
     }
 
+    /**
+     * @throws Exception
+     */
     @Then("^Fetch the connection details$")
     public void fetchTheConnectionDetails() throws Exception {
         Assert.assertNotNull("connectionId cannot be null", connectionId);
 
         MultivaluedMap<String, String> formData = new MultivaluedHashMap<String, String>();
         formData.add("id", connectionId);
-        formData.add("config", "{\"accountName\":\"" + Constants.SNOWFLAKE_ACCOUNT_NAME +"\","
-                + "\"user\":\"" + Constants.SNOWFLAKE_USER + "\",\"password\":\"" + Constants.SNOWFLAKE_PASSWORD + "\","
-                + "\"role\":\"" + Constants.SNOWFLAKE_ROLE + "\","
-                + "\"warehouse\":\"" + Constants.SNOWFLAKE_WAREHOUSE + "\",\"database\":\"" + Constants.SNOWFLAKE_DATABASE + "\","
-                + "\"schema\":\"" + Constants.SNOWFLAKE_SCHEMA + "\"}");
+        formData.add("config",
+                "{\"accountName\":\"" + Constants.SNOWFLAKE_ACCOUNT_NAME + "\"," + "\"user\":\""
+                        + Constants.SNOWFLAKE_USER + "\",\"password\":\""
+                        + Constants.SNOWFLAKE_PASSWORD + "\"," + "\"role\":\""
+                        + Constants.SNOWFLAKE_ROLE + "\"," + "\"warehouse\":\""
+                        + Constants.SNOWFLAKE_WAREHOUSE + "\",\"database\":\""
+                        + Constants.SNOWFLAKE_DATABASE + "\"," + "\"schema\":\""
+                        + Constants.SNOWFLAKE_SCHEMA + "\"}");
 
         System.out.println(formData);
 
         Response response = Util
-                .sendPostRequestWithAuthCookie(Constants.CONNECTION_FETCHCONNECTION, formData, null);
+                .sendPostRequestWithAuthCookie(Constants.CONNECTION_FETCHCONNECTION, formData,
+                        null);
         System.out.println(response);
         Util.verifyExpectedResponse(response, Response.Status.OK);
         JSONParser responseParser = new JSONParser();
@@ -549,8 +628,7 @@ public class CommonAPIActions {
         Assert.assertTrue("Mimstach database",
                 database.equalsIgnoreCase(Constants.SNOWFLAKE_DATABASE));
         String role = (String) configuration.get("role");
-        Assert.assertTrue("Mimstach role",
-                role.equalsIgnoreCase(Constants.SNOWFLAKE_ROLE));
+        Assert.assertTrue("Mimstach role", role.equalsIgnoreCase(Constants.SNOWFLAKE_ROLE));
         String accountName = (String) configuration.get("accountName");
         Assert.assertTrue("Mimstach accountName",
                 accountName.equalsIgnoreCase(Constants.SNOWFLAKE_ACCOUNT_NAME));
@@ -558,8 +636,7 @@ public class CommonAPIActions {
         Assert.assertTrue("Mimstach warehouse",
                 warehouse.equalsIgnoreCase(Constants.SNOWFLAKE_WAREHOUSE));
         String user = (String) configuration.get("user");
-        Assert.assertTrue("Mimstach user",
-                user.equalsIgnoreCase(Constants.SNOWFLAKE_USER));
+        Assert.assertTrue("Mimstach user", user.equalsIgnoreCase(Constants.SNOWFLAKE_USER));
 
         JSONArray externalDatabases = (JSONArray) responseObject.get("externalDatabases");
         System.out.println(configuration);
@@ -567,6 +644,9 @@ public class CommonAPIActions {
 
     }
 
+    /**
+     * @throws Exception
+     */
     @Then("^Get the list of logical tables that exists in the connection$")
     public void getTheListOfLogicalTablesThatExistsInTheConnection() throws Exception {
         Assert.assertNotNull("connection id cannot be null", connectionId);
@@ -574,8 +654,7 @@ public class CommonAPIActions {
         params.put("sort", "DEFAULT");
         params.put("sortascending", "false");
         String url = Constants.CONNECTION_DETAIL + "/" + connectionId;
-        Response response = Util
-                .sendGetRequestAuth(url, params);
+        Response response = Util.sendGetRequestAuth(url, params);
         System.out.println(response);
         Util.verifyExpectedResponse(response, Response.Status.OK);
 

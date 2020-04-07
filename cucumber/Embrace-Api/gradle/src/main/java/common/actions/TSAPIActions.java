@@ -38,12 +38,15 @@ public class TSAPIActions {
 
     private String userAuthToken;
 
+    /**
+     * @throws Exception
+     */
     @Given("^Login to trial account with short lived token$")
     public void loginToTrialAccountWithShortLivedToken() throws Exception {
         String id = SnowflakeAPIActions.getUserId();
         System.out.println(id);
 
-        if ( null !=id ) {
+        if (null != id) {
             Assert.assertNotNull(id);
             userId = id;
             userAuthToken = SnowflakeAPIActions.getUserAuthToken();
@@ -73,11 +76,14 @@ public class TSAPIActions {
             System.out.println(__cfduid);
 
             validateUserResponse(sessionLogin, "user", "INACTIVE", true);
-        }else{
+        } else {
             isActivated = true;
         }
     }
 
+    /**
+     * @throws Exception
+     */
     @Then("^Activate trial account user$")
     public void activateTrialAccountUser() throws Exception {
         if (!isActivated) {
@@ -111,19 +117,25 @@ public class TSAPIActions {
         }
     }
 
+    /**
+     * @param response
+     * @param userType
+     * @param state
+     * @param showWalkMe
+     * @throws IOException
+     * @throws ParseException
+     */
     public void validateUserResponse(Response response, String userType, String state,
-            Boolean showWalkMe) throws IOException,
-            ParseException {
+            Boolean showWalkMe) throws IOException, ParseException {
         String username;
-        if (userType.equalsIgnoreCase("admin")){
+        if (userType.equalsIgnoreCase("admin")) {
             username = Constants.TRIAL_ADMIN_USERNAME;
-        }else{
+        } else {
             username = Constants.TRIAL_USERNAME;
         }
 
         JSONParser responseParser = new JSONParser();
-        JSONObject responseObject = (JSONObject) responseParser
-                .parse(Util.readResponse(response));
+        JSONObject responseObject = (JSONObject) responseParser.parse(Util.readResponse(response));
         System.out.println(responseObject);
         String fetchedusername = (String) responseObject.get("userName");
         Assert.assertTrue(fetchedusername.equals(username));
@@ -136,7 +148,7 @@ public class TSAPIActions {
 
         String userGUID = (String) responseObject.get("userGUID");
         Assert.assertNotNull("User GUID cannot be empty", userGUID);
-        System.out.println("User guid : "+ userGUID);
+        System.out.println("User guid : " + userGUID);
 
         Boolean canChangePassword = (Boolean) responseObject.get("canChangePassword");
         Assert.assertTrue(canChangePassword);
@@ -171,7 +183,8 @@ public class TSAPIActions {
         Assert.assertNotNull(userPreferences);
 
         Boolean ActualShowWalkMe = (Boolean) userPreferences.get("showWalkMe");
-        Assert.assertTrue(showWalkMe.compareTo(ActualShowWalkMe) == 0 );
+        Assert.assertTrue(showWalkMe.compareTo(ActualShowWalkMe) == 0);
+        // TODO : Validate assertion
         /*if (userType.equalsIgnoreCase("user")) {
             Assert.assertTrue(showWalkMe);
         }*/
@@ -188,7 +201,7 @@ public class TSAPIActions {
         }
 
         Boolean isFirstLogin = (Boolean) responseObject.get("isFirstLogin");
-        // TODO : Remove the comment after testing
+        // TODO : Validate assertion
         //Assert.assertTrue(isFirstLogin);
         String ActualState = (String) responseObject.get("state");
         Assert.assertTrue(ActualState.equalsIgnoreCase(state));
@@ -196,16 +209,20 @@ public class TSAPIActions {
         Assert.assertTrue(license.equalsIgnoreCase("EAA"));
     }
 
+    /**
+     * @param userType
+     * @throws Exception
+     */
     @Given("^Login to trial account as (admin|user)$")
     public void loginToTrialAccount(String userType) throws Exception {
         String username = "";
         String password = "";
         Boolean showWalkMe = false;
 
-        if (userType.equalsIgnoreCase("admin")){
+        if (userType.equalsIgnoreCase("admin")) {
             username = Constants.TRIAL_ADMIN_USERNAME;
             password = Constants.TRIAL_ADMIN_PASSWORD;
-        }else{
+        } else {
             username = Constants.TRIAL_USERNAME;
             password = Constants.TRIAL_PASSWORD;
             showWalkMe = true;
@@ -235,20 +252,12 @@ public class TSAPIActions {
         validateUserResponse(sessionLogin, userType, "ACTIVE", showWalkMe);
     }
 
+    /**
+     * @param userType
+     * @throws Exception
+     */
     @Then("^validate trial session for (admin|user)$")
     public void validateTrialSession(String userType) throws Exception {
-        /*String username = "";
-        String password = "";
-
-        if (userType.equalsIgnoreCase("admin")){
-            username = Constants.TRIAL_ADMIN_USERNAME;
-            password = Constants.TRIAL_ADMIN_PASSWORD;
-        }else{
-            username = Constants.TRIAL_USERNAME;
-            password = Constants.TRIAL_PASSWORD;
-        }
-        System.out.println(username);
-        System.out.println(password);*/
         Response response = Util.sendGetRequestAuth(Constants.TRIAL_SESSION_INFO, null, sessionId);
         System.out.println(response);
         Util.verifyExpectedResponse(response, Response.Status.OK);
@@ -257,21 +266,14 @@ public class TSAPIActions {
         System.out.println(responseObject);
     }
 
+    /**
+     * @param userType
+     * @throws Exception
+     */
     @Then("^validate system config for (admin|user)$")
     public void validateSystemConfig(String userType) throws Exception {
-        /*String username = "";
-        String password = "";
-
-        if (userType.equalsIgnoreCase("admin")){
-            username = Constants.TRIAL_ADMIN_USERNAME;
-            password = Constants.TRIAL_ADMIN_PASSWORD;
-        }else{
-            username = Constants.TRIAL_USERNAME;
-            password = Constants.TRIAL_PASSWORD;
-        }*/
-
-        Response response =
-                Util.sendGetRequestAuth(Constants.TS_TRIAL_SYSTEM_CONFIG, null, sessionId);
+        Response response = Util
+                .sendGetRequestAuth(Constants.TS_TRIAL_SYSTEM_CONFIG, null, sessionId);
         System.out.println(response);
         Util.verifyExpectedResponse(response, Response.Status.OK);
         JSONParser responseParser = new JSONParser();
@@ -279,30 +281,34 @@ public class TSAPIActions {
         System.out.println(responseObject);
     }
 
+    /**
+     * @param userType
+     * @throws Exception
+     */
     @Given("^logout to trial account as (admin|user)$")
     public void logoutToTrialAccount(String userType) throws Exception {
         String username = "";
         String password = "";
 
-        if (userType.equalsIgnoreCase("admin")){
+        if (userType.equalsIgnoreCase("admin")) {
             username = Constants.TRIAL_ADMIN_USERNAME;
             password = Constants.TRIAL_ADMIN_PASSWORD;
-        }else{
+        } else {
             username = Constants.TRIAL_USERNAME;
             password = Constants.TRIAL_PASSWORD;
         }
         MultivaluedMap<String, String> formData = new MultivaluedHashMap<String, String>();
 
-        /*Response response = Util
-                .sendPostRequestWithSessionId(Constants.TRIAL_SESSION_LOGOUT, null, null, sessionId
-                        , clientId, __cfduid);*/
-        Response response =
-                Util.sendPostRequestWithAuthCookie(Constants.TRIAL_SESSION_LOGOUT, formData,
-                        username, password, null);
+        Response response = Util
+                .sendPostRequestWithAuthCookie(Constants.TRIAL_SESSION_LOGOUT, formData, username,
+                        password, null);
         System.out.println(response);
         Util.verifyExpectedResponse(response, Response.Status.NO_CONTENT);
     }
 
+    /**
+     * @throws Exception
+     */
     @Then("^delete trial account user$")
     public void deleteTrialAccountUser() throws Exception {
         Assert.assertNotNull(userId);
@@ -313,38 +319,44 @@ public class TSAPIActions {
         MultivaluedMap<String, String> formData = new MultivaluedHashMap<String, String>();
         formData.add("ids", deleteId);
 
-        Response response =
-                Util.sendPostRequestWithAuthCookie(Constants.TRIAL_SESSION_USER_DELETE, formData,
+        Response response = Util
+                .sendPostRequestWithAuthCookie(Constants.TRIAL_SESSION_USER_DELETE, formData,
                         Constants.TRIAL_ADMIN_USERNAME, Constants.TRIAL_ADMIN_PASSWORD, null);
 
         System.out.println(response);
         Util.verifyExpectedResponse(response, Response.Status.NO_CONTENT);
     }
 
+    /**
+     * @throws Exception
+     */
     @Then("^delete trial account user group$")
     public void deleteTrialAccountUserGroup() throws Exception {
         MultivaluedMap<String, String> formData = new MultivaluedHashMap<String, String>();
         formData.add("ids", "[" + groupId + "]");
         Assert.assertNotNull(groupId);
 
-        Response response =
-                Util.sendPostRequestWithAuthCookie(Constants.TRIAL_SESSION_GROUP_DELETE, formData,
+        Response response = Util
+                .sendPostRequestWithAuthCookie(Constants.TRIAL_SESSION_GROUP_DELETE, formData,
                         Constants.TRIAL_ADMIN_USERNAME, Constants.TRIAL_ADMIN_PASSWORD, null);
         System.out.println(response);
         Util.verifyExpectedResponse(response, Response.Status.NO_CONTENT);
     }
 
+    /**
+     * @throws Exception
+     */
     @Then("^fetch the group id$")
     public void fetchTheGroupId() throws Exception {
         Map<String, String> params = new HashMap<>();
-        params.put("pattern", "%25sameer.satyam@thoughtspot.com%25");
+        params.put("pattern", Constants.TRIAL_USER_SEARCH_PATTERN);
         params.put("showhidden", "false");
         params.put("sort", "NAME");
         params.put("sortascending", "true");
         params.put("type", "USER_GROUP");
 
-        Response response = Util.sendGetRequestAuth(Constants.TRIAL_SESSION_SEARCH_GROUP, params,
-                sessionId);
+        Response response = Util
+                .sendGetRequestAuth(Constants.TRIAL_SESSION_SEARCH_GROUP, params, sessionId);
 
         System.out.println(response);
         Util.verifyExpectedResponse(response, Response.Status.OK);
@@ -363,17 +375,20 @@ public class TSAPIActions {
         Assert.assertNotNull(groupId);
     }
 
+    /**
+     * @throws Exception
+     */
     @Then("^fetch the user id$")
     public void fetchTheUserId() throws Exception {
         Map<String, String> params = new HashMap<>();
-        params.put("pattern", "%25sameer.satyam@thoughtspot.com%25");
+        params.put("pattern", Constants.TRIAL_USER_SEARCH_PATTERN);
         params.put("showhidden", "false");
         params.put("sort", "NAME");
         params.put("sortascending", "true");
         params.put("type", "USER");
 
-        Response response = Util.sendGetRequestAuth(Constants.TRIAL_SESSION_SEARCH_GROUP, params,
-                sessionId);
+        Response response = Util
+                .sendGetRequestAuth(Constants.TRIAL_SESSION_SEARCH_GROUP, params, sessionId);
 
         System.out.println(response);
         Util.verifyExpectedResponse(response, Response.Status.OK);
@@ -388,9 +403,9 @@ public class TSAPIActions {
             Assert.assertNotNull(userId);
             String group = (String) headerObject.get("type");
             System.out.println(group);
-            //ToDO ; Remove after testing
+            //ToDO ; Remove after validation
             Assert.assertTrue(group.equalsIgnoreCase("LOCAL_USER"));
-        } catch (Exception ex){
+        } catch (Exception ex) {
             System.out.println("User not found");
         }
     }

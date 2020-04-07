@@ -47,21 +47,31 @@ public class Util {
         return sendGetRequest(url, jwt, MediaType.APPLICATION_JSON);
     }
 
+    /**
+     * @param url
+     * @param jwt
+     * @param mediaTypeStrings
+     * @return
+     */
     public static Response sendGetRequest(String url, String jwt, String... mediaTypeStrings) {
         WebTarget target = JERSEYCLIENT.target(url);
         LOG.info("Sending GET REQUEST URL = {}", url);
         LOG.debug("Sending GET REQUEST JWT = {}", jwt);
         Response getResponse = target.request(mediaTypeStrings)
-                .header(HttpHeaders.AUTHORIZATION, "Token " + jwt)
-                .get(Response.class);
+                .header(HttpHeaders.AUTHORIZATION, "Token " + jwt).get(Response.class);
         LOG.info("GET request response = {}", getResponse);
         return getResponse;
     }
 
+    /**
+     * @param url
+     * @param queryParam
+     * @return
+     */
     public static Response sendGetRequestAuth(String url, Map<String, String> queryParam) {
-        Cookie sessionId =  getTrialCookies();
+        Cookie sessionId = getTrialCookies();
         WebTarget target = JERSEYCLIENT.target(url);
-        if ( null !=queryParam) {
+        if (null != queryParam) {
             url = url + "?";
             for (Map.Entry<String, String> entry : queryParam.entrySet()) {
                 target = target.queryParam(entry.getKey(), entry.getValue());
@@ -69,17 +79,22 @@ public class Util {
         }
         LOG.info("Sending GET REQUEST URL = {}", url);
         Response getResponse = target.request(MediaType.TEXT_PLAIN, MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.CONTENT_TYPE, "application/json")
-                .cookie(sessionId)
+                .header(HttpHeaders.CONTENT_TYPE, "application/json").cookie(sessionId)
                 .get(Response.class);
         LOG.info("GET request response = {}", getResponse);
         return getResponse;
     }
 
+    /**
+     * @param url
+     * @param queryParam
+     * @param sessionId
+     * @return
+     */
     public static Response sendGetRequestAuth(String url, Map<String, String> queryParam,
             Cookie sessionId) {
         WebTarget target = JERSEYCLIENT.target(url);
-        if ( null !=queryParam) {
+        if (null != queryParam) {
             url = url + "?";
             for (Map.Entry<String, String> entry : queryParam.entrySet()) {
                 target = target.queryParam(entry.getKey(), entry.getValue());
@@ -87,38 +102,23 @@ public class Util {
         }
         LOG.info("Sending GET REQUEST URL = {}", url);
         Response getResponse = target.request(MediaType.TEXT_PLAIN, MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.CONTENT_TYPE, "application/json")
-                .cookie(sessionId)
+                .header(HttpHeaders.CONTENT_TYPE, "application/json").cookie(sessionId)
                 .get(Response.class);
         LOG.info("GET request response = {}", getResponse);
         return getResponse;
     }
 
-    public static Response sendTrialGetRequestAuth(String url, Map<String, String> queryParam,
-            String username , String password) {
-        Cookie sessionId =  getTrialCookies(username, password);
-
-        WebTarget target = JERSEYCLIENT.target(url);
-        if ( null !=queryParam) {
-            url = url + "?";
-            for (Map.Entry<String, String> entry : queryParam.entrySet()) {
-                target = target.queryParam(entry.getKey(), entry.getValue());
-            }
-        }
-        LOG.info("Sending GET REQUEST URL = {}", url);
-        Response getResponse = target.request(MediaType.TEXT_PLAIN, MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.CONTENT_TYPE, "application/json")
-                .cookie(sessionId)
-                .get(Response.class);
-        LOG.info("GET request response = {}", getResponse);
-        return getResponse;
-    }
-
+    /**
+     * @param url
+     * @param queryParam
+     * @param contentType
+     * @return
+     */
     public static Response sendGetRequestAuthWithContentType(String url,
             Map<String, String> queryParam, String contentType) {
-        Cookie sessionId =  getTrialCookies();
+        Cookie sessionId = getTrialCookies();
         WebTarget target = JERSEYCLIENT.target(url);
-        if ( null !=queryParam) {
+        if (null != queryParam) {
             url = url + "?";
             for (Map.Entry<String, String> entry : queryParam.entrySet()) {
                 target = target.queryParam(entry.getKey(), entry.getValue());
@@ -126,22 +126,25 @@ public class Util {
         }
         LOG.info("Sending GET REQUEST URL = {}", url);
         Response getResponse = target.request(MediaType.TEXT_PLAIN, MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.ACCEPT, contentType)
-                .header("X-Requested-By", "ThoughtSpot")
-                .cookie(sessionId)
-                .get(Response.class);
+                .header(HttpHeaders.ACCEPT, contentType).header("X-Requested-By", "ThoughtSpot")
+                .cookie(sessionId).get(Response.class);
         LOG.info("GET request response = {}", getResponse);
         return getResponse;
     }
 
+    /**
+     * @param url
+     * @param jwt
+     * @param queryParam
+     * @return
+     */
     public static Response sendGetRequestWithJwtAuth(String url, String jwt,
-            Map<String, String> queryParam) throws IOException, KeyManagementException,
-            NoSuchAlgorithmException {
+            Map<String, String> queryParam) {
         url = url + "?";
         System.setProperty("sun.net.http.allowRestrictedHeaders", "true");
         WebTarget target = JERSEYCLIENT.target(url);
         target.register(GZipEncoder.class);
-        if ( null != queryParam) {
+        if (null != queryParam) {
             for (Map.Entry<String, String> entry : queryParam.entrySet()) {
                 target = target.queryParam(entry.getKey(), entry.getValue());
             }
@@ -155,19 +158,23 @@ public class Util {
                 .header(HttpHeaders.AUTHORIZATION, jwt)
                 .header(HttpHeaders.HOST, Constants.SNOWFLAKE_HOST_HEADER)
                 .header("Origin", Constants.SNOWFLAKE_ORIGIN_HEADER)
-                .header("Referer", Constants.SNOWFLAKE_REFERER_HEADER)
-                .get(Response.class);
+                .header("Referer", Constants.SNOWFLAKE_REFERER_HEADER).get(Response.class);
         LOG.info("GET request response = {}", response);
         System.out.println(response.getHeaders());
         return response;
     }
 
-    public static Response sendPostRequestNoAuth(String url,
-            MultivaluedMap<String, String> input, Map<String, String> queryParam)
-            throws IOException, KeyManagementException, NoSuchAlgorithmException {
+    /**
+     * @param url
+     * @param input
+     * @param queryParam
+     * @return
+     */
+    public static Response sendPostRequestNoAuth(String url, MultivaluedMap<String, String> input,
+            Map<String, String> queryParam) {
         url = url + "?";
         WebTarget target = JERSEYCLIENT.target(url);
-        if ( null != queryParam) {
+        if (null != queryParam) {
             for (Map.Entry<String, String> entry : queryParam.entrySet()) {
                 target = target.queryParam(entry.getKey(), entry.getValue());
             }
@@ -183,13 +190,21 @@ public class Util {
         return postResponse;
     }
 
+    /**
+     * @param url
+     * @param input
+     * @param queryParam
+     * @param sessionId
+     * @param clientId
+     * @param __cfduid
+     * @return
+     */
     public static Response sendPostRequestWithSessionId(String url,
-            MultivaluedMap<String, String> input, Map<String, String> queryParam,
-            Cookie sessionId, Cookie clientId, Cookie __cfduid)
-            throws IOException, KeyManagementException, NoSuchAlgorithmException {
+            MultivaluedMap<String, String> input, Map<String, String> queryParam, Cookie sessionId,
+            Cookie clientId, Cookie __cfduid) {
         url = url + "?";
         WebTarget target = JERSEYCLIENT.target(url);
-        if ( null != queryParam) {
+        if (null != queryParam) {
             for (Map.Entry<String, String> entry : queryParam.entrySet()) {
                 target = target.queryParam(entry.getKey(), entry.getValue());
             }
@@ -201,21 +216,26 @@ public class Util {
                 .header(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded")
                 .cookie("clientId", String.valueOf(clientId))
                 .cookie("JSESSIONID", String.valueOf(sessionId))
-                .cookie("__cfduid", String.valueOf(__cfduid))
-                .post(Entity.form(input));
+                .cookie("__cfduid", String.valueOf(__cfduid)).post(Entity.form(input));
         LOG.info("GET request response = {}", postResponse);
 
         return postResponse;
     }
 
-    public static Response sendSFPostRequest(String url,
-            String input, Map<String, String> queryParam, String jwt)
-            throws IOException, KeyManagementException, NoSuchAlgorithmException {
+    /**
+     * @param url
+     * @param input
+     * @param queryParam
+     * @param jwt
+     * @return
+     */
+    public static Response sendSFPostRequest(String url, String input,
+            Map<String, String> queryParam, String jwt) {
         url = url + "?";
         System.setProperty("sun.net.http.allowRestrictedHeaders", "true");
         WebTarget target = JERSEYCLIENT.target(url);
         target.register(GZipEncoder.class);
-        if ( null != queryParam) {
+        if (null != queryParam) {
             for (Map.Entry<String, String> entry : queryParam.entrySet()) {
                 target = target.queryParam(entry.getKey(), entry.getValue());
             }
@@ -229,20 +249,24 @@ public class Util {
                 .header(HttpHeaders.AUTHORIZATION, jwt)
                 .header(HttpHeaders.HOST, Constants.SNOWFLAKE_HOST_HEADER)
                 .header("Origin", Constants.SNOWFLAKE_ORIGIN_HEADER)
-                .header("Referer", Constants.SNOWFLAKE_REFERER_HEADER)
-                .post(Entity.json(input));
+                .header("Referer", Constants.SNOWFLAKE_REFERER_HEADER).post(Entity.json(input));
         LOG.info("GET request response = {}", postResponse);
         System.out.println(postResponse.getHeaders());
         return postResponse;
     }
 
+    /**
+     * @param url
+     * @param input
+     * @param queryParam
+     * @return
+     */
     public static Response sendPostRequestWithAuthCookie(String url,
-            MultivaluedMap<String, String> input, Map<String, String> queryParam)
-            throws IOException, KeyManagementException, NoSuchAlgorithmException {
+            MultivaluedMap<String, String> input, Map<String, String> queryParam) {
         url = url + "?";
-        Cookie sessionId =  getTrialCookies();
+        Cookie sessionId = getTrialCookies();
         WebTarget target = JERSEYCLIENT.target(url);
-        if ( null != queryParam) {
+        if (null != queryParam) {
             for (Map.Entry<String, String> entry : queryParam.entrySet()) {
                 target = target.queryParam(entry.getKey(), entry.getValue());
             }
@@ -252,21 +276,27 @@ public class Util {
         Response postResponse = target.request(MediaType.TEXT_PLAIN, MediaType.APPLICATION_JSON)
                 .header("X-Requested-By", "ThoughtSpot")
                 .header(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded")
-                .cookie(sessionId)
-                .post(Entity.form(input));
+                .cookie(sessionId).post(Entity.form(input));
         LOG.info("GET request response = {}", postResponse);
 
         return postResponse;
     }
 
+    /**
+     * @param url
+     * @param input
+     * @param username
+     * @param password
+     * @param queryParam
+     * @return
+     */
     public static Response sendPostRequestWithAuthCookie(String url,
-            MultivaluedMap<String, String> input, String username , String password, Map<String,
-            String> queryParam)
-            throws IOException, KeyManagementException, NoSuchAlgorithmException {
+            MultivaluedMap<String, String> input, String username, String password,
+            Map<String, String> queryParam) {
         url = url + "?";
-        Cookie sessionId =  getTrialCookies(username, password);
+        Cookie sessionId = getTrialCookies(username, password);
         WebTarget target = JERSEYCLIENT.target(url);
-        if ( null != queryParam) {
+        if (null != queryParam) {
             for (Map.Entry<String, String> entry : queryParam.entrySet()) {
                 target = target.queryParam(entry.getKey(), entry.getValue());
             }
@@ -276,13 +306,15 @@ public class Util {
         Response postResponse = target.request(MediaType.TEXT_PLAIN, MediaType.APPLICATION_JSON)
                 .header("X-Requested-By", "ThoughtSpot")
                 .header(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded")
-                .cookie(sessionId)
-                .post(Entity.form(input));
+                .cookie(sessionId).post(Entity.form(input));
         LOG.info("GET request response = {}", postResponse);
 
         return postResponse;
     }
 
+    /**
+     * @return
+     */
     public static Cookie getTrialCookies() {
         WebTarget target = JERSEYCLIENT.target(Constants.SESSION_LOGIN);
         LOG.info("Sending post request with Query Param {}", target.toString());
@@ -299,7 +331,12 @@ public class Util {
         return postResponse.getCookies().get("JSESSIONID");
     }
 
-    public static Cookie getTrialCookies(String username , String password) {
+    /**
+     * @param username
+     * @param password
+     * @return
+     */
+    public static Cookie getTrialCookies(String username, String password) {
         WebTarget target = JERSEYCLIENT.target(Constants.TRIAL_SESSION_LOGIN);
         LOG.info("Sending post request with Query Param {}", target.toString());
         MultivaluedMap<String, String> formData = new MultivaluedHashMap<String, String>();
@@ -322,12 +359,8 @@ public class Util {
      * @param jwt
      * @param input
      * @return response
-     * @throws IOException
-     * @throws NoSuchAlgorithmException
-     * @throws KeyManagementException
      */
-    public static Response sendPutRequest(String url, String jwt, String input) throws IOException, KeyManagementException,
-            NoSuchAlgorithmException {
+    public static Response sendPutRequest(String url, String jwt, String input) {
         WebTarget target = JERSEYCLIENT.target(url);
         LOG.info("Sending PUT REQUEST URL = {}", url);
         LOG.info("Sending PUT REQUEST INPUT = {}", input);
@@ -343,12 +376,8 @@ public class Util {
      * @param url
      * @param jwt
      * @return response
-     * @throws IOException
-     * @throws NoSuchAlgorithmException
-     * @throws KeyManagementException
      */
-    public static Response sendDeleteRequest(String url, String jwt) throws IOException, KeyManagementException,
-            NoSuchAlgorithmException {
+    public static Response sendDeleteRequest(String url, String jwt) {
         WebTarget target = JERSEYCLIENT.target(url);
         LOG.info("Sending DELETE REQUEST URL = {}", url);
         LOG.debug("Sending DELETE REQUEST JWT = {}", jwt);
@@ -360,8 +389,8 @@ public class Util {
 
     public static Response sendDeleteRequestAuth(String url, Map<String, String> queryParam) {
         WebTarget target = JERSEYCLIENT.target(url);
-        Cookie sessionId =  getTrialCookies();
-        if ( null !=queryParam) {
+        Cookie sessionId = getTrialCookies();
+        if (null != queryParam) {
             url = url + "?";
             for (Map.Entry<String, String> entry : queryParam.entrySet()) {
                 target = target.queryParam(entry.getKey(), entry.getValue());
@@ -370,9 +399,7 @@ public class Util {
         LOG.info("Sending DELETE REQUEST URL = {}", url);
         Response deleteResponse = target.request(MediaType.TEXT_PLAIN, MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.CONTENT_TYPE, "application/json")
-                .header("X-Requested-By", "ThoughtSpot")
-                .cookie(sessionId)
-                .delete();
+                .header("X-Requested-By", "ThoughtSpot").cookie(sessionId).delete();
         LOG.info("GET request response = {}", deleteResponse);
         return deleteResponse;
     }
@@ -387,17 +414,25 @@ public class Util {
     /**
      * Verify expected response
      */
-    public static void verifyExpectedResponse(Response response, Status expectedStatus) throws Exception {
+    public static void verifyExpectedResponse(Response response, Status expectedStatus)
+            throws Exception {
         if (response.getStatus() != expectedStatus.getStatusCode()) {
-            throw new Exception("Expected response code: " + expectedStatus.getStatusCode() + " Actual response code: "
-                    + response.getStatus() + " Reason: " + response.getStatusInfo().getReasonPhrase() + "\n Response: "
-                    + readResponse(response));
+            throw new Exception("Expected response code: " + expectedStatus.getStatusCode()
+                    + " Actual response code: " + response.getStatus() + " Reason: " + response
+                    .getStatusInfo().getReasonPhrase() + "\n Response: " + readResponse(response));
         } else {
-            LOG.info("RESPONSE OK EXPECTED {} ACTUAL {}", expectedStatus.getStatusCode(), response.getStatus());
+            LOG.info("RESPONSE OK EXPECTED {} ACTUAL {}", expectedStatus.getStatusCode(),
+                    response.getStatus());
         }
     }
 
-    public static String buildRequestData(Map<String, Object> postRequestInput) throws JsonProcessingException {
+    /**
+     * @param postRequestInput
+     * @return
+     * @throws JsonProcessingException
+     */
+    public static String buildRequestData(Map<String, Object> postRequestInput)
+            throws JsonProcessingException {
         ObjectMapper postRequestInputObjMapper = new ObjectMapper();
         String input = postRequestInputObjMapper.writeValueAsString(postRequestInput);
         return input;
