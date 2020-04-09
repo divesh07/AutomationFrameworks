@@ -166,6 +166,7 @@ public class SnowflakeAPIActions {
     public void removeETLIntegration() throws Exception {
         refreshAuthToken();
         Map<String, String> params = new HashMap<>();
+
         params.put("requestId", ETL_REQUEST_ID);
 
         Assert.assertNotNull("Jwt auth token cannot be null", jwtAuthToken);
@@ -173,7 +174,7 @@ public class SnowflakeAPIActions {
         System.out.println(jwt);
 
         Response response = Util
-                .sendSFPostRequest(Constants.SNOWFLAKE_ACTION, REMOVE_ETL_INTEGRATION, params, jwt);
+                .sendSFPostRequest(Constants.SNOWFLAKE_QUERY, REMOVE_ETL_INTEGRATION, params, jwt);
         System.out.println(response);
         Util.verifyExpectedResponse(response, Response.Status.OK);
     }
