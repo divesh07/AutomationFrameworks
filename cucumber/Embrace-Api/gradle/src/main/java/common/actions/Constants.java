@@ -58,7 +58,7 @@ public class Constants {
 
     public static final String TRIAL_USER_EMAIL = "sameer.satyam@thoughtspot.com";
 
-    public static final String TRIAL_USER_SEARCH_PATTERN ="%25sameer.satyam@thoughtspot.com%25";
+    public static final String TRIAL_USER_SEARCH_PATTERN = "%25sameer.satyam@thoughtspot.com%25";
 
     public static final String SNOWFLAKE_DATA_SOURCE = "RDBMS_SNOWFLAKE";
 

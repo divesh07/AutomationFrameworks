@@ -411,6 +411,9 @@ public class SnowflakeAPIActions {
         }
     }
 
+    /**
+     * @throws Exception
+     */
     @Then("^Recreate ETL integration$")
     public void recreateETLIntegration() throws Exception {
         refreshAuthToken();

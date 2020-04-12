@@ -174,7 +174,6 @@ public class TSAPIActions {
             //Todo : Check if 204 is Expected status or if it should be 409 ( conflict )
             Util.verifyExpectedResponse(sessionLogin, Response.Status.NO_CONTENT);
         }
-
     }
 
     /**
@@ -497,6 +496,9 @@ public class TSAPIActions {
         }
     }
 
+    /**
+     * @throws Exception
+     */
     @Then("^Login to trial account with invalid short lived token$")
     public void loginToTrialAccountWithInvalidShortLivedToken() throws Exception {
         String id = SnowflakeAPIActions.getUserId();
@@ -520,6 +522,9 @@ public class TSAPIActions {
 
     }
 
+    /**
+     * @throws Exception
+     */
     @Then("^Login to trial account with the expired short lived token$")
     public void loginToTrialAccountWithTheExpiredShortLivedToken() throws Exception {
         String id = SnowflakeAPIActions.getUserId();
