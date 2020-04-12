@@ -82,6 +82,36 @@ public class TSAPIActions {
     }
 
     /**
+     *
+     */
+    @Given("^Re-Login to trial account with short lived token$")
+    public void reLoginToTrialAccountWithShortLivedToken() throws Exception {
+        String id = SnowflakeAPIActions.getUserId();
+        System.out.println(id);
+
+        if (null != id) {
+            Assert.assertNotNull(id);
+            userId = id;
+            userAuthToken = SnowflakeAPIActions.getUserAuthToken();
+            System.out.println(userAuthToken);
+            Assert.assertNotNull(userAuthToken);
+
+            MultivaluedMap<String, String> formData = new MultivaluedHashMap<String, String>();
+            formData.add("id", id);
+            formData.add("shortlivedauthenticationtoken", userAuthToken);
+
+            Response sessionLogin = Util
+                    .sendPostRequestNoAuth(Constants.TRIAL_SHORT_LIVED_LOGIN, formData, null);
+            System.out.println(sessionLogin);
+            ifLoggedIn = true;
+            Util.verifyExpectedResponse(sessionLogin, Response.Status.OK);
+
+        } else {
+            isActivated = true;
+        }
+    }
+
+    /**
      * @throws Exception
      */
     @Then("^Activate trial account user$")
@@ -114,6 +144,63 @@ public class TSAPIActions {
             clientId = sessionLogin.getCookies().get("clientId");
             Assert.assertNotNull("clientId cannot be empty", clientId);
             System.out.println(clientId);
+        }
+    }
+
+    /**
+     *
+     */
+    @Then("^Reactivate same user$")
+    public void reactivateSameUser() throws Exception {
+        if (!isActivated) {
+            MultivaluedMap<String, String> formData = new MultivaluedHashMap<String, String>();
+            formData.add("userid", userId);
+            formData.add("auth_token", userAuthToken);
+            formData.add("password", Constants.TRIAL_PASSWORD);
+            formData.add("properties", "Ih1zYW1lZXIuc2F0eWFtQHRob3VnaHRzcG90LmNvbQ");
+            System.out.println(sessionId);
+            System.out.println(clientId);
+            System.out.println(userId);
+            System.out.println(userAuthToken);
+
+            Assert.assertNotNull(sessionId);
+            Assert.assertNotNull(userId);
+            Assert.assertNotNull(userAuthToken);
+            Assert.assertNotNull(clientId);
+
+            Response sessionLogin = Util
+                    .sendPostRequestWithSessionId(Constants.TRIAL_USER_ACTIVATE, formData, null,
+                            sessionId, clientId, __cfduid);
+            //Todo : Check if 204 is Expected status or if it should be 409 ( conflict )
+            Util.verifyExpectedResponse(sessionLogin, Response.Status.NO_CONTENT);
+        }
+
+    }
+
+    /**
+     * @throws Exception
+     */
+    @Then("^Validate user activation with invalid token$")
+    public void validateUserActivationWithInvalidToken() throws Exception {
+        if (!isActivated) {
+            MultivaluedMap<String, String> formData = new MultivaluedHashMap<String, String>();
+            formData.add("userid", userId);
+            formData.add("auth_token", Constants.INVALID_AUTH_TOKEN);
+            formData.add("password", Constants.TRIAL_PASSWORD);
+            formData.add("properties", "Ih1zYW1lZXIuc2F0eWFtQHRob3VnaHRzcG90LmNvbQ");
+            System.out.println(sessionId);
+            System.out.println(clientId);
+            System.out.println(userId);
+
+            Assert.assertNotNull(sessionId);
+            Assert.assertNotNull(userId);
+            Assert.assertNotNull(clientId);
+
+            Response sessionLogin = Util
+                    .sendPostRequestWithSessionId(Constants.TRIAL_USER_ACTIVATE, formData, null,
+                            sessionId, clientId, __cfduid);
+
+            Util.verifyExpectedResponse(sessionLogin, Response.Status.FORBIDDEN);
         }
     }
 
@@ -407,6 +494,117 @@ public class TSAPIActions {
             Assert.assertTrue(group.equalsIgnoreCase("LOCAL_USER"));
         } catch (Exception ex) {
             System.out.println("User not found");
+        }
+    }
+
+    @Then("^Login to trial account with invalid short lived token$")
+    public void loginToTrialAccountWithInvalidShortLivedToken() throws Exception {
+        String id = SnowflakeAPIActions.getUserId();
+        System.out.println(id);
+
+        if (null != id) {
+            Assert.assertNotNull(id);
+            userId = id;
+
+            MultivaluedMap<String, String> formData = new MultivaluedHashMap<String, String>();
+            formData.add("id", id);
+            formData.add("shortlivedauthenticationtoken", Constants.INVALID_AUTH_TOKEN);
+
+            Response sessionLogin = Util
+                    .sendPostRequestNoAuth(Constants.TRIAL_SHORT_LIVED_LOGIN, formData, null);
+            System.out.println(sessionLogin);
+            Util.verifyExpectedResponse(sessionLogin, Response.Status.UNAUTHORIZED);
+        } else {
+            isActivated = true;
+        }
+
+    }
+
+    @Then("^Login to trial account with the expired short lived token$")
+    public void loginToTrialAccountWithTheExpiredShortLivedToken() throws Exception {
+        String id = SnowflakeAPIActions.getUserId();
+        System.out.println(id);
+
+        if (null != id) {
+            Assert.assertNotNull(id);
+            userId = id;
+            userAuthToken = SnowflakeAPIActions.getUserAuthToken();
+            System.out.println(userAuthToken);
+            Assert.assertNotNull(userAuthToken);
+
+            MultivaluedMap<String, String> formData = new MultivaluedHashMap<String, String>();
+            formData.add("id", id);
+            formData.add("shortlivedauthenticationtoken", userAuthToken);
+
+            Response sessionLogin = Util
+                    .sendPostRequestNoAuth(Constants.TRIAL_SHORT_LIVED_LOGIN, formData, null);
+            System.out.println(sessionLogin);
+
+            Util.verifyExpectedResponse(sessionLogin, Response.Status.UNAUTHORIZED);
+
+        } else {
+            isActivated = true;
+        }
+    }
+
+    /**
+     *
+     */
+    @Given("^Login to trial account with invalid destination$")
+    public void loginToTrialAccountWithInvalidDestination() throws Exception {
+        String id = SnowflakeAPIActions.getUserId();
+        System.out.println(id);
+
+        if (null != id) {
+            Assert.assertNotNull(id);
+            userId = id;
+            userAuthToken = SnowflakeAPIActions.getUserAuthToken();
+            System.out.println(userAuthToken);
+            Assert.assertNotNull(userAuthToken);
+
+            MultivaluedMap<String, String> formData = new MultivaluedHashMap<String, String>();
+            formData.add("id", id);
+            formData.add("shortlivedauthenticationtoken", userAuthToken);
+
+            Response sessionLogin = Util
+                    .sendPostRequestNoAuth(Constants.TRIAL_SHORT_LIVED_LOGIN + "/baddestination",
+                            formData, null);
+            System.out.println(sessionLogin);
+            // Todo : Verify if this should be Bad Request
+            Util.verifyExpectedResponse(sessionLogin, Response.Status.UNAUTHORIZED);
+
+        } else {
+            isActivated = true;
+        }
+    }
+
+    /**
+     * @throws Exception
+     */
+    @Given("^Login to trial account with invalid body$")
+    public void loginToTrialAccountWithInvalidBody() throws Exception {
+        String id = SnowflakeAPIActions.getUserId();
+        System.out.println(id);
+
+        if (null != id) {
+            Assert.assertNotNull(id);
+            userId = id;
+            userAuthToken = SnowflakeAPIActions.getUserAuthToken();
+            System.out.println(userAuthToken);
+            Assert.assertNotNull(userAuthToken);
+
+            MultivaluedMap<String, String> formData = new MultivaluedHashMap<String, String>();
+            formData.add("id", "id");
+            formData.add("shortlivedauthenticationtoken", "shortlivedauthenticationtoken");
+
+            Response sessionLogin = Util
+                    .sendPostRequestNoAuth(Constants.TRIAL_SHORT_LIVED_LOGIN, formData, null);
+            System.out.println(sessionLogin);
+
+            Util.verifyExpectedResponse(sessionLogin, Response.Status.BAD_REQUEST);
+
+        } else {
+            isActivated = true;
         }
     }
 }

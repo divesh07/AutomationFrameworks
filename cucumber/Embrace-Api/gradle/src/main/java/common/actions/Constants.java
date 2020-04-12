@@ -183,5 +183,7 @@ public class Constants {
 
     public static final String DRIVER_LOC = "/usr/local/Cellar/geckodriver/0.26.0/bin/geckodriver";
 
+    public static final String INVALID_AUTH_TOKEN = "der23242mdbbfsnfhsfisad";
+
     public static final Boolean ENBALE_UI = false;
 }

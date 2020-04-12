@@ -411,6 +411,34 @@ public class SnowflakeAPIActions {
         }
     }
 
+    @Then("^Recreate ETL integration$")
+    public void recreateETLIntegration() throws Exception {
+        refreshAuthToken();
+
+        Map<String, String> params = new HashMap<>();
+        params.put("requestId", ETL_INTEGRATION_REQUEST_ID);
+
+        Assert.assertNotNull("Jwt auth token cannot be null", jwtAuthToken);
+        String jwt = "Snowflake Token=\"" + jwtAuthToken + "\"";
+        System.out.println(jwt);
+
+        Response response = Util
+                .sendSFPostRequest(Constants.SNOWFLAKE_QUERY, CREATE_ETL_INTEGRATION, params, jwt);
+        System.out.println(response);
+        Util.verifyExpectedResponse(response, Response.Status.OK);
+
+        String returnedString = AssertQueryRequestResponse(response);
+        System.out.println(returnedString);
+        JSONParser parser = new JSONParser();
+        JSONObject returnedObject = (JSONObject) parser.parse(returnedString);
+
+        String message = (String) returnedObject.get("message");
+        System.out.println(message);
+        if (message.equalsIgnoreCase("Partner is already integrated")) {
+            System.out.println("ETL Integration not required");
+        }
+    }
+
     /**
      * @return
      */
