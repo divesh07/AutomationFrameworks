@@ -4,21 +4,19 @@ public class Constants {
 
     public static final long UI_IMPLICIT_WAIT = 2000;
 
-    public static final String HOST_IP = "172.18.104.3";
+    public static final String HOST_IP = "";
 
     public static final String TS_CLUSTER = "http://" + HOST_IP + ":8088";
 
     public static final String CLUSTER_BASE_PATH = TS_CLUSTER + "/callosum/v1/";
 
-    public static final String SNOWFLAKE_HOST_HEADER = "thoughtspot_partner.snowflakecomputing.com";
+    public static final String SNOWFLAKE_HOST_HEADER = "";
 
-    public static final String SNOWFLAKE_ORIGIN_HEADER =
-            "https://thoughtspot_partner" + ".snowflakecomputing.com";
+    public static final String SNOWFLAKE_ORIGIN_HEADER = "";
 
-    public static final String SNOWFLAKE_REFERER_HEADER =
-            "https://thoughtspot_partner" + ".snowflakecomputing.com/console/login";
+    public static final String SNOWFLAKE_REFERER_HEADER = "";
 
-    public static final String TRIAL_HOST = "try.thoughtspot.com";
+    public static final String TRIAL_HOST = "";
 
     public static final String TS_TRIAL_CLUSTER_URL = "https://" + TRIAL_HOST;
 
@@ -32,41 +30,41 @@ public class Constants {
 
     public static final int AUTO_REFRESH_UI_IMPLICIT_WAIT_SECONDS = 3;
 
-    public static final String CUSTOMER_USERNAME = "tsadmin";
+    public static final String CUSTOMER_USERNAME = "";
 
-    public static final String CUSTOMER_PASSWORD = "admin";
+    public static final String CUSTOMER_PASSWORD = "";
 
-    public static final String CUSTOMER_DISPLAY_NAME = "Administrator";
+    public static final String CUSTOMER_DISPLAY_NAME = "";
 
     public static final String CUSTOMER_TYPE = "LOCAL_USER";
 
     public static final String CUSTOMER_VISIBILITY = "DEFAULT";
 
-    public static final String SECONDARY_CUSTOMER_USERNAME = "testUser";
+    public static final String SECONDARY_CUSTOMER_USERNAME = "";
 
-    public static final String SECONDARY_CUSTOMER_PASSWORD = "th0ught$p0t";
+    public static final String SECONDARY_CUSTOMER_PASSWORD = "";
 
-    public static final String TRIAL_USERNAME = "sameer.satyam@thoughtspot.com";
+    public static final String TRIAL_USERNAME = "";
 
-    public static final String TRIAL_PASSWORD = "th0ught$p0t";
+    public static final String TRIAL_PASSWORD = "";
 
-    public static final String TRIAL_ADMIN_USERNAME = "tsadmin";
+    public static final String TRIAL_ADMIN_USERNAME = "";
 
-    public static final String TRIAL_ADMIN_PASSWORD = "th0ughtSp0t!";
+    public static final String TRIAL_ADMIN_PASSWORD = "";
 
-    public static final String TRIAL_USER_DISPLAYNAME = "SAMEER SATYAM";
+    public static final String TRIAL_USER_DISPLAYNAME = "";
 
-    public static final String TRIAL_USER_EMAIL = "sameer.satyam@thoughtspot.com";
+    public static final String TRIAL_USER_EMAIL = "";
 
-    public static final String TRIAL_USER_SEARCH_PATTERN = "%25sameer.satyam@thoughtspot.com%25";
+    public static final String TRIAL_USER_SEARCH_PATTERN = "";
 
     public static final String SNOWFLAKE_DATA_SOURCE = "RDBMS_SNOWFLAKE";
 
-    public static final String SNOWFLAKE_ACCOUNT_NAME = "thoughtspot_partner";
+    public static final String SNOWFLAKE_ACCOUNT_NAME = "";
 
-    public static final String SNOWFLAKE_USER = "DIVESH_GANDHI";
+    public static final String SNOWFLAKE_USER = "";
 
-    public static final String SNOWFLAKE_PASSWORD = "Embrace123";
+    public static final String SNOWFLAKE_PASSWORD = "";
 
     public static final String SNOWFLAKE_ROLE = "DEVELOPER";
 
